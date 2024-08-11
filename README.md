@@ -184,7 +184,23 @@ Here are some common RISC-V instructions and their brief descriptions:
 
 ## Instruction Type Identification and Binary Encoding
 
-Here's the given list of instructions with their corresponding types and 32-bit binary encodings:
+Here's the given list of instructions:
+
+```
+ADD r4, r5, r6
+SUB r6, r4, r5
+AND r5, r4, r6
+OR r8, r5, r5
+XOR r8, r4, r4
+SLT r10, r2, r4
+ADDI r12, r3, 5
+SW r3, r1, 4
+SRL r16, r11, r2
+BNE r0, r1, 20
+BEQ r0, r0, 15
+LW r13, r11, 2
+SLL r15, r11, r2
+```
 
 ## 1. ADD r4, r5, r6
 Binary: `0000000 00110 00101 000 00100 0110011`
