@@ -186,57 +186,120 @@ Here are some common RISC-V instructions and their brief descriptions:
 
 Here's the given list of instructions with their corresponding types and 32-bit binary encodings:
 
-1. `ADD r4, r5, r6` - R-type
-   - Operation: Register-to-register addition
-   - Binary: `0000000 00110 00101 000 00100 0110011`
+## 1. ADD r4, r5, r6
+Binary: `0000000 00110 00101 000 00100 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `00100` - Destination register r4
+- funct3 (14-12): `000` - ADD operation
+- rs1 (19-15): `00101` - First source register r5
+- rs2 (24-20): `00110` - Second source register r6
+- funct7 (31-25): `0000000` - Specifies ADD (vs SUB)
 
-2. `SUB r6, r4, r5` - R-type
-   - Operation: Register-to-register subtraction
-   - Binary: `0100000 00101 00100 000 00110 0110011`
+## 2. SUB r6, r4, r5
+Binary: `0100000 00101 00100 000 00110 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `00110` - Destination register r6
+- funct3 (14-12): `000` - SUB operation
+- rs1 (19-15): `00100` - First source register r4
+- rs2 (24-20): `00101` - Second source register r5
+- funct7 (31-25): `0100000` - Specifies SUB (vs ADD)
 
-3. `AND r5, r4, r6` - R-type
-   - Operation: Register-to-register bitwise AND
-   - Binary: `0000000 00110 00100 111 00101 0110011`
+## 3. AND r5, r4, r6
+Binary: `0000000 00110 00100 111 00101 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `00101` - Destination register r5
+- funct3 (14-12): `111` - AND operation
+- rs1 (19-15): `00100` - First source register r4
+- rs2 (24-20): `00110` - Second source register r6
+- funct7 (31-25): `0000000` - Standard R-type
 
-4. `OR r8, r5, r5` - R-type
-   - Operation: Register-to-register bitwise OR
-   - Binary: `0000000 00101 00101 110 01000 0110011`
+## 4. OR r8, r5, r5
+Binary: `0000000 00101 00101 110 01000 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `01000` - Destination register r8
+- funct3 (14-12): `110` - OR operation
+- rs1 (19-15): `00101` - First source register r5
+- rs2 (24-20): `00101` - Second source register r5
+- funct7 (31-25): `0000000` - Standard R-type
 
-5. `XOR r8, r4, r4` - R-type
-   - Operation: Register-to-register bitwise XOR
-   - Binary: `0000000 00100 00100 100 01000 0110011`
+## 5. XOR r8, r4, r4
+Binary: `0000000 00100 00100 100 01000 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `01000` - Destination register r8
+- funct3 (14-12): `100` - XOR operation
+- rs1 (19-15): `00100` - First source register r4
+- rs2 (24-20): `00100` - Second source register r4
+- funct7 (31-25): `0000000` - Standard R-type
 
-6. `SLT r10, r2, r4` - R-type
-   - Operation: Set Less Than, comparing two registers
-   - Binary: `0000000 00100 00010 010 01010 0110011`
+## 6. SLT r10, r2, r4
+Binary: `0000000 00100 00010 010 01010 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `01010` - Destination register r10
+- funct3 (14-12): `010` - SLT operation
+- rs1 (19-15): `00010` - First source register r2
+- rs2 (24-20): `00100` - Second source register r4
+- funct7 (31-25): `0000000` - Standard R-type
 
-7. `ADDI r12, r3, 5` - I-type
-   - Operation: Add immediate, adding a constant to a register
-   - Binary: `000000000101 00011 000 01100 0010011`
+## 7. ADDI r12, r3, 5
+Binary: `000000000101 00011 000 01100 0010011`
+- Opcode (6-0): `0010011` - I-type arithmetic operation
+- rd (11-7): `01100` - Destination register r12
+- funct3 (14-12): `000` - ADDI operation
+- rs1 (19-15): `00011` - Source register r3
+- imm[11:0] (31-20): `000000000101` - Immediate value 5
 
-8. `SW r3, r1, 4` - S-type
-   - Operation: Store word, storing a value from a register to memory
-   - Binary: `0000000 00011 00001 010 00100 0100011`
+## 8. SW r3, r1, 4
+Binary: `0000000 00011 00001 010 00100 0100011`
+- Opcode (6-0): `0100011` - S-type store operation
+- imm[4:0] (11-7): `00100` - Lower bits of offset 4
+- funct3 (14-12): `010` - SW operation
+- rs1 (19-15): `00001` - Base address register r1
+- rs2 (24-20): `00011` - Source register r3
+- imm[11:5] (31-25): `0000000` - Upper bits of offset 4
 
-9. `SRL r16, r11, r2` - R-type
-   - Operation: Shift Right Logical, using registers for both value and shift amount
-   - Binary: `0000000 00010 01011 101 10000 0110011`
+## 9. SRL r16, r11, r2
+Binary: `0000000 00010 01011 101 10000 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `10000` - Destination register r16
+- funct3 (14-12): `101` - SRL operation
+- rs1 (19-15): `01011` - First source register r11
+- rs2 (24-20): `00010` - Second source register r2
+- funct7 (31-25): `0000000` - Specifies SRL (vs SRA)
 
-10. `BNE r0, r1, 20` - B-type
-    - Operation: Branch if Not Equal, a conditional branch
-    - Binary: `0000101 00001 00000 001 00000 1100011`
+## 10. BNE r0, r1, 20
+Binary: `0000101 00001 00000 001 00000 1100011`
+- Opcode (6-0): `1100011` - B-type branch operation
+- imm[4:1|11] (11-7): `00000` - Part of offset 20
+- funct3 (14-12): `001` - BNE operation
+- rs1 (19-15): `00000` - First source register r0
+- rs2 (24-20): `00001` - Second source register r1
+- imm[12|10:5] (31-25): `0000101` - Rest of offset 20
 
-11. `BEQ r0, r0, 15` - B-type
-    - Operation: Branch if Equal, another conditional branch
-    - Binary: `0000011 00000 00000 000 11000 1100011`
+## 11. BEQ r0, r0, 15
+Binary: `0000011 00000 00000 000 11000 1100011`
+- Opcode (6-0): `1100011` - B-type branch operation
+- imm[4:1|11] (11-7): `11000` - Part of offset 15
+- funct3 (14-12): `000` - BEQ operation
+- rs1 (19-15): `00000` - First source register r0
+- rs2 (24-20): `00000` - Second source register r0
+- imm[12|10:5] (31-25): `0000011` - Rest of offset 15
 
-12. `LW r13, r11, 2` - I-type
-    - Operation: Load Word, loading a value from memory into a register
-    - Binary: `000000000010 01011 010 01101 0000011`
+## 12. LW r13, r11, 2
+Binary: `000000000010 01011 010 01101 0000011`
+- Opcode (6-0): `0000011` - I-type load operation
+- rd (11-7): `01101` - Destination register r13
+- funct3 (14-12): `010` - LW operation
+- rs1 (19-15): `01011` - Base address register r11
+- imm[11:0] (31-20): `000000000010` - Offset 2
 
-13. `SLL r15, r11, r2` - R-type
-    - Operation: Shift Left Logical, using registers for both value and shift amount
-    - Binary: `0000000 00010 01011 001 01111 0110011`
+## 13. SLL r15, r11, r2
+Binary: `0000000 00010 01011 001 01111 0110011`
+- Opcode (6-0): `0110011` - R-type arithmetic operation
+- rd (11-7): `01111` - Destination register r15
+- funct3 (14-12): `001` - SLL operation
+- rs1 (19-15): `01011` - First source register r11
+- rs2 (24-20): `00010` - Second source register r2
+- funct7 (31-25): `0000000` - Standard R-type
   
 </details>
 
