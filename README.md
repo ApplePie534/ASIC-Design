@@ -319,4 +319,234 @@ Binary: `0000000 00010 01011 001 01111 0110011`
   
 </details>
 
+<details>
+  <summary>Lab 5</summary>
+
+# RISC-V Instruction Waveforms
+
+
+---
+
+## Generating VCD Files and Viewing Waveforms
+
+### Step 1: Running the Simulation to Generate the VCD File
+To generate the VCD file, use the following command in your terminal:
+
+```bash
+iverilog -o dump iiitb_rv32i_tb.v iiitb_rv32i.v
+./dump
+```
+
+This will generate the `iiitb_rv32i.vcd` file, which contains the waveform data.
+
+### Step 2: Viewing the Waveform with GTKWave
+Once the VCD file is generated, you can view the waveform using GTKWave. Use the following command:
+
+```bash
+gtkwave iiitb_rv32i.vcd
+```
+
+This README section includes instructions for generating the VCD file and viewing it using GTKWave, along with troubleshooting common issues. The example session shows how these commands would be executed in a terminal, similar to what you provided.
+  
+# RISC-V Operations: Standard ISA vs Hardcoded ISA
+
+This table compares the standard RISC-V ISA with the hardcoded ISA values used in the implementation.
+
+| Operation           | Standard RISC-V ISA | Hardcoded ISA  |
+|---------------------|---------------------|----------------|
+| ADD R6, R2, R1      | 32'h00110333         | 32'h02208300   |
+| SUB R7, R1, R2      | 32'h402083b3         | 32'h02209380   |
+| AND R8, R1, R3      | 32'h0030f433         | 32'h0230a400   |
+| OR R9, R2, R5       | 32'h005164b3         | 32'h02513480   |
+| XOR R10, R1, R4     | 32'h0040c533         | 32'h0240c500   |
+| SLT R1, R2, R4      | 32'h0045a0b3         | 32'h02415580   |
+| ADDI R12, R4, 5     | 32'h004120b3         | 32'h00520600   |
+| BEQ R0, R0, 15      | 32'h00000f63         | 32'h00f00002   |
+| SW R3, R1, 2        | 32'h0030a123         | 32'h00209181   |
+| LW R13, R1, 2       | 32'h0020a683         | 32'h00208681   |
+| SRL R16, R14, R2    | 32'h0030a123         | 32'h00271803   |
+| SLL R15, R1, R2     | 32'h002097b3         | 32'h00208783   |
+
+
+### Output Waveforms
+
+# RISC-V Instruction Waveforms
+
+Each section includes the assembly instruction, its corresponding machine code, and a screenshot of the waveform captured during simulation.
+
+---
+## 1. ADD Instruction
+
+### Instruction:
+```assembly
+add r6, r1, r2  // r6 = r1 + r2
+```
+
+### Machine Code:
+```assembly
+32'h02208300
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/40d9e8e4-a268-4f91-b7fb-d9e71aa39bf7">
+
+---
+
+## 2. SUB Instruction
+
+### Instruction:
+```assembly
+sub r7, r1, r2  // r7 = r1 - r2
+```
+
+### Machine Code:
+```assembly
+32'h02209380
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/661b5dd4-a936-4364-8aef-00863f2b4ab1">
+
+---
+
+## 3. AND Instruction
+
+### Instruction:
+```assembly
+and r8, r1, r3  // r8 = r1 & r3
+```
+
+### Machine Code:
+```assembly
+32'h0230a400
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/e386ab8a-aad5-46d8-9a2c-8a7705a78c8c">
+
+---
+
+## 4. OR Instruction
+
+### Instruction:
+```assembly
+or r9, r2, r5  // r9 = r2 | r5
+```
+
+### Machine Code:
+```assembly
+32'h02513480
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/c98d5b6d-09d6-4be5-80b2-7052e55ef249">
+
+---
+
+## 5. XOR Instruction
+
+### Instruction:
+```assembly
+xor r10, r1, r4  // r10 = r1 ^ r4
+```
+
+### Machine Code:
+```assembly
+32'h0240c500
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/78ce298d-12d5-41be-be08-79c7edee7049">
+
+---
+
+## 6. SLT Instruction
+
+### Instruction:
+```assembly
+slt r11, r2, r4  // r11 = (r2 < r4) ? 1 : 0
+```
+
+### Machine Code:
+```assembly
+32'h02415580
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/5f8f9ab8-5269-4df6-a276-703e1381f87c">
+
+---
+
+## 7. ADDI Instruction
+
+### Instruction:
+```assembly
+addi r12, r4, 5  // r12 = r4 + 5
+```
+
+### Machine Code:
+```assembly
+32'h00520600
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/03ae1b1b-f0a8-46e0-aec2-4094d3340c8e">
+
+---
+
+## 8. BEQ Instruction
+
+### Instruction:
+```assembly
+beq r0, r0, 15  // if (r0 == r0) PC = PC + 15
+```
+
+### Machine Code:
+```assembly
+32'h000f0028
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/a6b4f720-db66-4c59-a42b-24fa4993cdc3">
+
+---
+
+## 9. SW Instruction
+
+### Instruction:
+```assembly
+sw r3, r1, 2  // Store word at memory[r1 + 2] = r3
+```
+
+### Machine Code:
+```assembly
+32'h00209181
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/a46dc777-45f4-4b76-b6e3-0a549e9c5597">
+
+---
+
+## 10. LW Instruction
+
+### Instruction:
+```assembly
+lw r13, r1, 2  // Load word from memory[r1 + 2] to r13
+```
+
+### Machine Code:
+```assembly
+32'h00208681
+```
+
+### Waveform:
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/dd37fc23-fa59-405a-84c7-a46e9740e830">
+
+
+```
+
+  
+</details>
+
 
