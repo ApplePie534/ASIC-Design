@@ -589,8 +589,6 @@ After compiling with GCC:
 ```
 <img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/08140048-f30d-4022-a7ac-2124bffe1b98">
 
-As we can see, both the compiler give the same output.
-
 ### On a RISC-V Emulator or Hardware (RISC-V GCC)
 
 After compiling with RISC-V GCC, you can run the program using the Spike RISC-V simulator with the following command:
@@ -599,7 +597,9 @@ After compiling with RISC-V GCC, you can run the program using the Spike RISC-V 
 spike pk calendar.o
 ```
 <img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/f5c57764-e767-47bf-8e5f-e1b64a6bec12">
----
+
+As we can see, both the compilers give the same output.
+
 
 ## Notes
 
