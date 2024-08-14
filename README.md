@@ -542,8 +542,6 @@ lw r13, r1, 2  // Load word from memory[r1 + 2] to r13
 <img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/dd37fc23-fa59-405a-84c7-a46e9740e830">
 
 
-```
-
   
 </details>
 
