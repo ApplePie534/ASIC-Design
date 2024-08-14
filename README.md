@@ -545,4 +545,10 @@ lw r13, r1, 2  // Load word from memory[r1 + 2] to r13
   
 </details>
 
+<details>
+  <summary>Lab 6</summary>
+  "https://github.com/user-attachments/assets/08140048-f30d-4022-    a7ac-2124bffe1b98"
+
+</details>
+
 
