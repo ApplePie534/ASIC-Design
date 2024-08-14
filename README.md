@@ -547,7 +547,67 @@ lw r13, r1, 2  // Load word from memory[r1 + 2] to r13
 
 <details>
   <summary>Lab 6</summary>
-  "https://github.com/user-attachments/assets/08140048-f30d-4022-    a7ac-2124bffe1b98"
+
+---
+
+# Simple Calendar Program
+
+This is a basic C program that displays a calendar for a given month and year. It has been compiled and tested using both GCC and RISC-V GCC.
+
+## Features
+
+- **Leap Year Calculation:** Determines if a given year is a leap year.
+- **Day Calculation:** Calculates the day of the week on which the first day of the month falls.
+- **Month Display:** Prints the calendar for any specified month and year, showing the correct days of the week.
+
+## How to Compile
+
+### Using GCC
+
+To compile the program with GCC, use the following command:
+
+```sh
+gcc calendar.c
+```
+
+### Using RISC-V GCC
+
+To compile the program with RISC-V GCC, use the following command:
+
+```sh
+riscv64-unknown-elf-gcc -Ofast -mabi=lp64 -march=rv64i -o calendar.o calendar.c
+```
+
+## How to Run
+
+### On Your Local Machine (GCC)
+
+After compiling with GCC:
+
+```sh
+./a.out
+```
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/08140048-f30d-4022-a7ac-2124bffe1b98">
+
+As we can see, both the compiler give the same output.
+
+### On a RISC-V Emulator or Hardware (RISC-V GCC)
+
+After compiling with RISC-V GCC, you can run the program using the Spike RISC-V simulator with the following command:
+
+```sh
+spike pk calendar.o
+```
+<img width="772" alt="3808 1535301636" src="https://github.com/user-attachments/assets/f5c57764-e767-47bf-8e5f-e1b64a6bec12">
+---
+
+## Notes
+
+- The calendar is centered within a width of 28 characters.
+- This program assumes a modern terminal environment that supports basic text formatting.
+- Alignment may vary slightly based on the terminal emulator or environment.
+
+---
 
 </details>
 
