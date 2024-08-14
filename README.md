@@ -345,8 +345,6 @@ Once the VCD file is generated, you can view the waveform using GTKWave. Use the
 ```bash
 gtkwave iiitb_rv32i.vcd
 ```
-
-This README section includes instructions for generating the VCD file and viewing it using GTKWave, along with troubleshooting common issues. The example session shows how these commands would be executed in a terminal, similar to what you provided.
   
 # RISC-V Operations: Standard ISA vs Hardcoded ISA
 
