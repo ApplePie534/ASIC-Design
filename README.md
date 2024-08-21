@@ -618,83 +618,96 @@ As we can see, both the compilers give the same output.
   
   ## Day 4 Basic RISC-V Microarchitecture
 
+## Overview
+This project implements a simple RISC-V instruction decoder, arithmetic logic unit (ALU), register file read and write operations, branch instructions, and a basic program to compute the sum of integers from 1 to 9 using TL-Verilog. The project is structured into several key sections, each performing a specific task in the CPU pipeline.
+
+<img src="https://github.com/user-attachments/assets/b0db15f1-a725-4ca5-bb05-943e4bbf8d53">
 
 ---
 
-### Steps Implemented:
+## Steps
 
-#### 1. **Program Counter (PC) Initialization and Incrementing:**
+### 1. **Program Counter (PC) Implementation**
+We initialize the program counter (PC) and update it to increment by 4 after every instruction. On reset, the PC is set to 0.
 
-We implemented the **Program Counter (PC)** which holds the address of the next instruction. On reset, the PC is set to 0, and for each clock cycle, it increments by 4 bytes (the size of each instruction).
-
-**Code:**
-```systemverilog
-$pc[31:0] = $reset ? '0 : >>1$pc + 32'd4;  // PC resets to 0, increments by 4.
+```verilog
+$pc[31:0] = $reset ? '0 : >>1$pc + 32'd4;
 ```
+<img src="https://github.com/user-attachments/assets/a9afc723-052f-4224-9579-89e8617a0eb2">
 
-- **Reset Logic:** The PC is set to 0 on reset.
-- **Increment Logic:** PC increments by 4 to point to the next instruction.
+### 2. **Instruction Fetch**
+- The instruction memory (`imem`) is read based on the current value of the PC.
+- The read enable (`$imem_rd_en`) and read address (`$imem_rd_addr`) are set up using the PC.
+
+<img src="https://github.com/user-attachments/assets/9399741a-8cff-4407-960b-15fbcd42ef8a">
+
+### 3. **Instruction Decode**
+- The instruction is decoded to identify the instruction type (I, R, S, B, J, U).
+- Immediate values (`$imm`) and registers (`$rs1`, `$rs2`, `$rd`) are extracted based on the instruction type.
+
+```verilog
+$is_i_instr = $instr[6:2] ==? 5'b0000x || ...;
+$imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} : ... ;
+```
+<img src="https://github.com/user-attachments/assets/959426a1-0855-475a-8664-a4664e55c54e">
+
+### 4. **Register File Read**
+- Register indices for reading (`$rs1`, `$rs2`) are set based on the decoded instruction.
+- Data is read from the register file (`$rf_rd_data1`, `$rf_rd_data2`).
+
+```verilog
+$src1_value[31:0] = $rf_rd_data1;
+$src2_value[31:0] = $rf_rd_data2;
+```
+<img src="https://github.com/user-attachments/assets/d4be976d-2034-4a78-9b24-73b0d5b052f0">
+
+### 5. **ALU Operations**
+- The Arithmetic Logic Unit (ALU) performs addition operations based on the instruction.
+- For example, it computes the result of ADDI and ADD instructions:
+
+```verilog
+$result[31:0] = $is_addi ? $src1_value + $imm :
+                $is_add ? $src1_value + $src2_value : 32'bx;
+```
+<img src="https://github.com/user-attachments/assets/5c73cc4f-2869-4ff5-9e78-5b7f4911dc2c">
+
+### 6. **Register File Write**
+- After an operation is completed, the result is written back to the register file.
+- If the destination register (`$rd`) is valid, the write enable (`$rf_wr_en`) is activated and the result is written to the register.
+
+```verilog
+$rf_wr_en = $rd_valid && $rd != 5'b0;
+$rf_wr_data[31:0] = $result;
+```
+<img src="https://github.com/user-attachments/assets/ab51554c-d669-4ef9-9673-fc29d497b268">
+
+### 7. **Branch Instructions**
+- Branch decisions are made based on the values of the source registers and the type of branch instruction (BEQ, BNE, etc.).
+- If a branch is taken, the PC is updated to the target address.
+
+```verilog
+$taken_branch = $is_beq ? ($src1_value == $src2_value) :
+                $is_bne ? ($src1_value != $src2_value) : ... ;
+br_target_pc[31:0] = $pc + $imm;
+```
+<img src="https://github.com/user-attachments/assets/b06b091c-c48b-467c-869a-075ab07aacb1">
+
+### 8. **Summation Program**
+- We implemented a small RISC-V program to calculate the sum of integers from 1 to 9.
+- The program increments the value of **r10** (x10) with each of the numbers.
+- After the program completes, **x10** should contain **45** (the sum of 1 to 9).
+
+### 9. **Waveform Check**
+- At the end of the simulation, **x10** should hold **45**. This is verified using the following comparison:
+
+```verilog
+*passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9);
+```
+<img src="https://github.com/user-attachments/assets/69836dcc-9a54-4e73-b37e-11bdb03ad1b8">
+
+- As we can see, the simulation is successful.
 
 ---
-
-#### 2. **Instruction Fetch:**
-
-Using the PC value, we fetch instructions from the instruction memory.
-
-**Code:**
-```systemverilog
-$imem_rd_en = !$reset ? 1 : 0; // Enable instruction memory read if not in reset state.
-$imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2]; // Instruction memory read address.
-```
-
-- **Instruction Memory Read Enable:** The memory read is enabled after reset.
-- **Read Address:** The PC value is used to fetch the instruction from memory.
-
----
-
-#### 3. **Instruction Decoder:**
-
-The instruction decoder identifies the type of instruction (I-type, R-type, B-type, etc.) and extracts the relevant fields (immediate values, registers, etc.).
-
-- **Type Detection:** We classify instructions into different types (I-type, R-type, S-type, B-type, J-type, and U-type) based on bits [6:2] of the instruction.
-  
-**Code:**
-```systemverilog
-$is_i_instr = $instr[6:2] ==? 5'b0000x || ... // Identify I-type instructions
-$is_r_instr = $instr[6:2] ==? 5'b011x0 || ... // Identify R-type instructions
-```
-
-- **Immediate Field Extraction:** We extract the immediate values for different instruction formats (I, S, B, U, and J).
-
-**Code:**
-```systemverilog
-$imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} : // I-type immediate extraction
-             $is_s_instr ? {{21{$instr[31]}}, $instr[30:25], $instr[11:7]} : ... 
-```
-
-- **Register Field Extraction:** We extract the register fields (rs1, rs2, rd) for instructions that use registers.
-
-**Code:**
-```systemverilog
-$rs1[4:0] = $instr[19:15];  // Extract rs1
-$rs2[4:0] = $instr[24:20];  // Extract rs2 (if applicable)
-$rd[4:0] = $instr[11:7];    // Extract rd
-```
-
-- **Instruction Matching:** We identify specific instructions like `BEQ`, `BNE`, `ADDI`, `ADD`, etc., using the `opcode`, `funct3`, and `funct7` fields.
-
-**Code:**
-```systemverilog
-$is_beq = $dec_bits ==? 11'bx_000_1100011; // BEQ instruction detection
-$is_add = $dec_bits ==? 11'b0_000_0110011; // ADD instruction detection
-```
-
---- 
-  PC code: https://github.com/user-attachments/assets/a9afc723-052f-4224-9579-89e8617a0eb2
-  Fetch/imem code: https://github.com/user-attachments/assets/9399741a-8cff-4407-960b-15fbcd42ef8a
-  Instruction decode: https://github.com/user-attachments/assets/959426a1-0855-475a-8664-a4664e55c54e
-
-
 
 </details>
 
