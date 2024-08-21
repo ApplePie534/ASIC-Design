@@ -616,6 +616,238 @@ As we can see, both the compilers give the same output.
 <details>
   <summary>Lab 7</summary>
   
+  ## Day 3 Digital Logic with TL-Verilog and Makerchip
+
+  ### Multiplexer Using Ternary Operator:
+  2:1 Multiplexer: This Verilog code uses a ternary operator to implement a 2:1 multiplexer. The output f follows x1 when s is high (1) and x0 when s is low (0).
+  ```
+  assign f = s ? x1 : x0;
+  ```
+<img src="https://github.com/user-attachments/assets/1d8fa40e-0e65-4803-91c1-976724d09e7f">
+
+4:1 Multiplexer: A higher-bit multiplexer can be realized using nested ternary operators, as shown in the Verilog code below:
+
+```
+assign f = sel[0] ? a : (sel[1] ? b : (sel[2] ? c : d));
+```
+<img src="https://github.com/user-attachments/assets/b9259d46-0a4d-4497-9222-043b629d6747">
+
+### TL-Verilog
+TL-Verilog (Transaction-Level Verilog) is a high-level hardware description language that simplifies the design and verification of digital systems, particularly CPUs and pipelines. Unlike traditional Verilog, TL-Verilog introduces transaction-level abstractions that help manage complexity, improve design readability, and enhance productivity by minimizing low-level control signals and boilerplate code. This results in faster design iterations and easier debugging, especially for pipelined architectures.
+
+### Makerchip IDE
+It is a cloud-based platform tailored for developing digital circuits using TL-Verilog. It offers an intuitive interface for writing, simulating, and visualizing TL-Verilog code. Makerchip provides real-time feedback, waveform visualizations, and integration with RISC-V and other processor design projects, making it an excellent tool for both learning and professional hardware development. Its user-friendly approach streamlines the hardware design process, from conception to validation.
+
+### Basic Combinational Circuits using TL Verilog:
+
+### 1. Inverter
+ ```
+ $out = ! $in;
+ ```
+<img src="https://github.com/user-attachments/assets/ea27e2c7-ea84-42d9-a646-4bbee39f943b">
+
+### 2. Arithmetic Operation on Vectors
+```
+$out[4:0] = $in1[3:0] + $in2[3:0];
+```
+<img src="https://github.com/user-attachments/assets/f4bac631-d533-4813-a9a2-f71748ffb7d1">
+
+### 3. 2-Input And Gate
+```
+$out = $in1 && $in2;
+```
+<img src="https://github.com/user-attachments/assets/cd42028a-6848-4725-88c6-4ffa03cb2f08">
+
+### 4. 2-Input OR Gate
+```
+$out = $in1 || $in2;
+```
+<img src="https://github.com/user-attachments/assets/9e6d6955-c226-49f3-b719-501011854bbb">
+
+### 5. 2-Input XOR Gate
+```
+$out = $in1 ^ $in2;
+```
+<img src = "https://github.com/user-attachments/assets/888db502-e3a4-4554-9910-0f5fb106c19c">
+
+### 6. 2:1 MUX
+```
+$out[11:0] = $sel ? $in1[11:0] : $in0[11:0];
+```
+<img src="https://github.com/user-attachments/assets/6d553a28-5611-4431-a708-b42333e07ba8">
+
+### 7. Combinational Calculator
+```
+$val1[31:0] = $rand1[3:0];
+$val2[31:0] = $rand2[3:0];
+
+$sum[31:0]  = $val1[31:0] + $val2[31:0];
+$diff[31:0] = $val1[31:0] - $val2[31:0];
+$prod[31:0] = $val1[31:0] * $val2[31:0];
+$quot[31:0] = $val1[31:0] / $val2[31:0];
+
+$out[31:0] = ($sel[1:0] == 2'b00) ? $sum[31:0]:
+             ($sel[1:0] == 2'b01) ? $diff[31:0]:
+             ($sel[1:0] == 2'b10) ? $prod[31:0]:
+                                    $quot[31:0];
+```
+In this code snippet, two random 4-bit values, `$rand1[3:0]` and `$rand2[3:0]`, are assigned to the 32-bit variables `$val1[31:0]` and `$val2[31:0]`, respectively. The calculator then performs four arithmetic operations on these values:
+
+The result of one of these operations is selected by a multiplexer (MUX), controlled by the selection bits `$sel[1:0]`. The MUX determines which operation's output is assigned to `$out[31:0]`.
+
+<img src="https://github.com/user-attachments/assets/2130918d-3d8f-4b18-88a0-d1f412cc3be4">
+
+## Sequential Circuits
+
+---
+
+A sequential circuit is a digital circuit that uses memory components to retain data, allowing it to generate outputs based on both current inputs and the circuit's previous state. Unlike combinational circuits, which depend only on present inputs, sequential circuits use feedback loops and storage elements like flip-flops or registers to track their internal state. This internal state, along with current inputs, influences the circuit's behavior, enabling tasks that require input history, such as counting, data storage, or event sequencing.
+
+### 1. Fibbonacci Series:
+```   
+$num[31:0] = $reset ? 1 : (>>1$num + >>2$num);
+```
+<img src="https://github.com/user-attachments/assets/8e58adef-ce9c-4d90-afe3-513d51a71785">
+<img src="https://github.com/user-attachments/assets/4b1fef26-edde-41c8-8b34-7750c5964381">
+
+### 2. Counter Series:
+
+```
+$cnt[31:0] = $reset ? 0 : (>>1$cnt + 1);
+```
+<img src="https://github.com/user-attachments/assets/dd159d7a-bfa6-483d-8172-346035fa94f3">
+<img src="https://github.com/user-attachments/assets/877073fd-8801-4c9c-94d6-afcefb16a0df">
+
+#### 3. Sequential Calculator:
+```
+
+   $val1[31:0] = >>2$out;
+   $val2[31:0] = $rand2[3:0];
+
+   $sum[31:0]  = $val1[31:0] + $val2[31:0];
+   $diff[31:0] = $val1[31:0] - $val2[31:0];
+   $prod[31:0] = $val1[31:0] * $val2[31:0];
+   $quot[31:0] = $val1[31:0] / $val2[31:0];
+
+   $nxt[31:0] = ($sel[1:0] == 2'b00) ? $sum[31:0]:
+                ($sel[1:0] == 2'b01) ? $diff[31:0]:
+                ($sel[1:0] == 2'b10) ? $prod[31:0]:
+                                       $quot[31:0];
+   
+   $out[31:0] = $reset ? 32'h0 : $nxt;
+```
+<img src="https://github.com/user-attachments/assets/f1b49683-b8ff-4f09-8ec9-a5c3363486f2">
+<img src="https://github.com/user-attachments/assets/a33c41f3-aafc-4fc1-bee2-3b72f0f492c9">
+
+## Pipelined Logic:
+
+---
+### 1. Recereating the design:
+In Transaction-Level Verilog (TL-Verilog), pipelined logic is efficiently expressed using pipeline constructs that represent data flow across design stages, each corresponding to a clock cycle. This approach simplifies the modeling of sequential logic by automatically handling state propagation and enabling clear, concise descriptions of complex, multi-stage operations, improving both design clarity and maintainability.
+```
+|pipe
+  @1
+    $err1 = $bad_input || $illegal_op;
+  @3
+    $err2 = $over_flow || $err1;
+  @6
+    $err3 = $div_by_zero || $err2;
+```
+![image](https://github.com/user-attachments/assets/d0e8776f-ed04-4034-a728-d69b3a68efec)
+
+### 2. Pipelined Calculator:
+![image](https://github.com/user-attachments/assets/5556fa5e-606a-442b-81b8-6df8cb8e069c)
+
+
+```
+   |cal
+      @1
+         $reset = *reset;
+         $clk_kar = *clk;
+
+         $valid[31:0] = $reset ? 0 : (>>1$valid + 1);
+         $valid_or_reset = $reset | ~$valid;
+         
+         $val1[31:0] = >>2$out;
+         $val2[31:0] = $rand2[3:0];
+
+         $sum[31:0]  = $val1[31:0] + $val2[31:0];
+         $diff[31:0] = $val1[31:0] - $val2[31:0];
+         $prod[31:0] = $val1[31:0] * $val2[31:0];
+         $quot[31:0] = $val1[31:0] / $val2[31:0];
+         
+      @2
+         $nxt[31:0] = ($sel[1:0] == 2'b00) ? $sum[31:0]:
+                      ($sel[1:0] == 2'b01) ? $diff[31:0]:
+                      ($sel[1:0] == 2'b10) ? $prod[31:0]:
+                                             $quot[31:0];
+        
+         
+         $out[31:0] = $valid_or_reset ? 32'h0 : $nxt;
+         
+```
+![image](https://github.com/user-attachments/assets/5d050d5e-b9d6-48b7-b3e8-23e9c142c839)
+
+### 3. Cycle Calculator with validity:
+```
+
+   $reset = *reset;
+   $clk_kar = *clk;
+   
+   |cal
+      @1
+         $reset = *reset;
+         $clk_kar = *clk;
+         
+         $cnt[31:0] = $reset ? 0 : (>>1$cnt + 1);
+         $valid = $cnt;
+         $valid_or_reset = ($reset | $valid);
+         
+      
+      ?$valid
+         @1
+            $val1[31:0] = >>2$out;
+            $val2[31:0] = $rand2[3:0];
+            
+            $sum[31:0]  = $val1[31:0] + $val2[31:0];
+            $diff[31:0] = $val1[31:0] - $val2[31:0];
+            $prod[31:0] = $val1[31:0] * $val2[31:0];
+            $quot[31:0] = $val1[31:0] / $val2[31:0];
+            
+         @2
+            $nxt[31:0] = ($sel[1:0] == 2'b00) ? $sum[31:0]:
+                         ($sel[1:0] == 2'b01) ? $diff[31:0]:
+                         ($sel[1:0] == 2'b10) ? $prod[31:0]:
+                                                $quot[31:0];
+            
+            $out[31:0] = $valid_or_reset ? 32'h0 : $nxt;
+            
+            
+            
+```
+![image](https://github.com/user-attachments/assets/e3cb7228-7d39-4d53-a8bb-fc357194ccd1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
   ## Day 4 Basic RISC-V Microarchitecture
 
 ## Overview
