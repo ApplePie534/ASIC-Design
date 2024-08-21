@@ -938,6 +938,17 @@ br_target_pc[31:0] = $pc + $imm;
 <img src="https://github.com/user-attachments/assets/69836dcc-9a54-4e73-b37e-11bdb03ad1b8">
 
 - As we can see, the simulation is successful.
+![image](https://github.com/user-attachments/assets/716ab179-f212-4207-8e2a-5f79eeaae700)
+- The value increases gradually till 45.
+
+### CLK:
+![image](https://github.com/user-attachments/assets/ab825bae-3aff-44d0-93db-f12724285efa)
+
+
+### Reset:
+![image](https://github.com/user-attachments/assets/8033e921-0102-4471-b1a2-109b7db0ce6f)
+
+
 
 ---
 ## Day 5 Pipelined RISC-V Microarchitecture
@@ -1066,7 +1077,7 @@ $src2_value[31:0] = $rs2_bypass ? >>1$result[31:0] : $rf_rd_data2[31:0];
    |cpu
       @0
          $reset = *reset;
-         $clk_kar = *clk;
+         $clk_ans = *clk;
          
          //PC fetch - branch, jumps and loads introduce 2 cycle bubbles in this pipeline
          $pc[31:0] = >>1$reset ? '0 : (>>3$valid_taken_br ? >>3$br_tgt_pc :
