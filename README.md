@@ -1061,6 +1061,21 @@ $src2_value[31:0] = $rs2_bypass ? >>1$result[31:0] : $rf_rd_data2[31:0];
 \SV
    endmodule
 ```
+### Block diagram:
+<image src="https://github.com/user-attachments/assets/bf8efb5b-2c4a-4c12-a281-6c868623d543">
+
+### CLK:
+<image src="https://github.com/user-attachments/assets/d2e34b69-736e-437a-9110-d9ded9a2dbde">
+
+### Reset:
+<image src="https://github.com/user-attachments/assets/d73e8484-0fd6-4346-9d7a-de5d6ecb2570">
+
+### Gradual increase of sum:
+<image src="https://github.com/user-attachments/assets/d6784de4-fe9b-4737-abe1-b783439afc5d">
+
+### Viz Diagram:
+- As seen here, reg 10 and reg 14 reach 55 after 64 cycles.
+<image src="https://github.com/user-attachments/assets/a41c0360-916d-4679-b0cd-c598abd48cae">
 
 
 
