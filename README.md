@@ -613,4 +613,89 @@ As we can see, both the compilers give the same output.
 
 </details>
 
+<details>
+  <summary>Lab 7</summary>
+  
+  ## Day 4 Basic RISC-V Microarchitecture
+
+
+---
+
+### Steps Implemented:
+
+#### 1. **Program Counter (PC) Initialization and Incrementing:**
+
+We implemented the **Program Counter (PC)** which holds the address of the next instruction. On reset, the PC is set to 0, and for each clock cycle, it increments by 4 bytes (the size of each instruction).
+
+**Code:**
+```systemverilog
+$pc[31:0] = $reset ? '0 : >>1$pc + 32'd4;  // PC resets to 0, increments by 4.
+```
+
+- **Reset Logic:** The PC is set to 0 on reset.
+- **Increment Logic:** PC increments by 4 to point to the next instruction.
+
+---
+
+#### 2. **Instruction Fetch:**
+
+Using the PC value, we fetch instructions from the instruction memory.
+
+**Code:**
+```systemverilog
+$imem_rd_en = !$reset ? 1 : 0; // Enable instruction memory read if not in reset state.
+$imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2]; // Instruction memory read address.
+```
+
+- **Instruction Memory Read Enable:** The memory read is enabled after reset.
+- **Read Address:** The PC value is used to fetch the instruction from memory.
+
+---
+
+#### 3. **Instruction Decoder:**
+
+The instruction decoder identifies the type of instruction (I-type, R-type, B-type, etc.) and extracts the relevant fields (immediate values, registers, etc.).
+
+- **Type Detection:** We classify instructions into different types (I-type, R-type, S-type, B-type, J-type, and U-type) based on bits [6:2] of the instruction.
+  
+**Code:**
+```systemverilog
+$is_i_instr = $instr[6:2] ==? 5'b0000x || ... // Identify I-type instructions
+$is_r_instr = $instr[6:2] ==? 5'b011x0 || ... // Identify R-type instructions
+```
+
+- **Immediate Field Extraction:** We extract the immediate values for different instruction formats (I, S, B, U, and J).
+
+**Code:**
+```systemverilog
+$imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} : // I-type immediate extraction
+             $is_s_instr ? {{21{$instr[31]}}, $instr[30:25], $instr[11:7]} : ... 
+```
+
+- **Register Field Extraction:** We extract the register fields (rs1, rs2, rd) for instructions that use registers.
+
+**Code:**
+```systemverilog
+$rs1[4:0] = $instr[19:15];  // Extract rs1
+$rs2[4:0] = $instr[24:20];  // Extract rs2 (if applicable)
+$rd[4:0] = $instr[11:7];    // Extract rd
+```
+
+- **Instruction Matching:** We identify specific instructions like `BEQ`, `BNE`, `ADDI`, `ADD`, etc., using the `opcode`, `funct3`, and `funct7` fields.
+
+**Code:**
+```systemverilog
+$is_beq = $dec_bits ==? 11'bx_000_1100011; // BEQ instruction detection
+$is_add = $dec_bits ==? 11'b0_000_0110011; // ADD instruction detection
+```
+
+--- 
+  PC code: https://github.com/user-attachments/assets/a9afc723-052f-4224-9579-89e8617a0eb2
+  Fetch/imem code: https://github.com/user-attachments/assets/9399741a-8cff-4407-960b-15fbcd42ef8a
+  Instruction decode: https://github.com/user-attachments/assets/959426a1-0855-475a-8664-a4664e55c54e
+
+
+
+</details>
+
 
