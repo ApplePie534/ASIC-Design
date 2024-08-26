@@ -1323,11 +1323,119 @@ $src2_value[31:0] = $rs2_bypass ? >>1$result[31:0] : $rf_rd_data2[31:0];
 
 
 ---
-
-
-
-
-
 </details>
+<details>
+  <summary>Lab 8</summary>
+
+---
+
+## Comparision of RISC-V Pre-Synthesis Simulation outputs using Iverilog GTKwave and Makerchip
+
+### Overview
+
+This project involves working with the VSDBabySoC, a small RISC-V System-on-Chip (SoC) design. The goal is to simulate and analyze the design using Icarus Verilog and GTKWave. Additionally, we will compare the results with those obtained from Makerchip, a cloud-based RISC-V design and simulation tool.
+
+
+To install the required tools, run:
+
+```bash
+sudo apt install make python python3 python3-pip git iverilog gtkwave docker.io
+sudo chmod 666 /var/run/docker.sock
+pip3 install pyyaml click sandpiper-saas
+```
+
+## Setting Up the Project
+
+1. **Clone the VSDBabySoC Repository:**
+
+   Navigate to your home directory and clone the repository:
+
+   ```bash
+   cd ~
+   git clone https://github.com/manili/VSDBabySoC.git
+   cd VSDBabySoC
+   ```
+
+2. **Replace the `rvmyth.tlv` File:**
+
+   Replace the `rvmyth.tlv` file in the `VSDBabySoC/src/module` folder with your RISC-V design from Makerchip.
+
+3. **Update the Testbench:**
+
+   Modify the testbench in the `VSDBabySoC/src/module` folder to match your design from Makerchip.
+
+4. **Convert TL-Verilog to Verilog:**
+
+   Use SandPiper-SaaS to translate the `.tlv` file to a Verilog `.v` file:
+
+   ```bash
+   sandpiper-saas -i ./src/module/rvmyth.tlv -o rvmyth.v --bestsv --noline -p verilog --outdir ./src/module/
+   ```
+
+## Running the Pre-Synthesis Simulation
+
+1. **Compile the Verilog Code:**
+
+   Use Icarus Verilog to compile the Verilog code and the testbench:
+
+   ```bash
+   iverilog -o output/pre_synth_sim.out -DPRE_SYNTH_SIM src/module/testbench.v -I src/include -I src/module
+   ```
+
+2. **Run the Simulation:**
+
+   Navigate to the `output` directory and run the simulation:
+
+   ```bash
+   cd output
+   ./pre_synth_sim.out
+   ```
+
+   This will generate a `.vcd` file that logs signal transitions during the simulation.
+
+3. **View the Waveform:**
+
+   Use GTKWave to analyze the waveform and verify the design's behavior:
+
+   ```bash
+   gtkwave pre_synth_sim.vcd
+   ```
+   ![image](https://github.com/user-attachments/assets/d4d138d8-a828-4610-9fa4-11d1eff535ee)
+  ![image](https://github.com/user-attachments/assets/358cdf75-0bc4-43f6-b66e-fe612e37d716)
+  ![image](https://github.com/user-attachments/assets/d803d370-bdbc-4714-a311-b54eef499199)
+
+## Comparing with Makerchip Results
+
+After obtaining the results from the pre-synthesis simulation using Icarus Verilog and GTKWave, we compared them with the results from Makerchip.
+
+## GTKWave Simulation waveforms:
+### CLK
+ ![image](https://github.com/user-attachments/assets/c004cd55-0490-4b84-a549-add185e66726)
+ ### Reset
+  ![image](https://github.com/user-attachments/assets/9d003a44-2a83-4a34-b326-164df73642cb)
+  ### Output 
+  ![image](https://github.com/user-attachments/assets/4b9e9ecb-a66b-4f0a-b4db-37abb43bbda7)
+
+## Makerchip IDE simulation results for comparison
+### CLK
+![360146103-ab825bae-3aff-44d0-93db-f12724285efa](https://github.com/user-attachments/assets/39d1d84e-11f6-4544-b7aa-727d45342c4d)
+### Reset
+![360145566-8033e921-0102-4471-b1a2-109b7db0ce6f](https://github.com/user-attachments/assets/1d7debd8-e953-4f54-b0ce-722ed668a784)
+### Output
+![360144599-716ab179-f212-4207-8e2a-5f79eeaae700](https://github.com/user-attachments/assets/47ea1fba-55ac-493c-82d1-928f66744d78)
+
+---
+
+## Conclusion
+
+This lab demonstrates the process of simulating a RISC-V design using traditional simulation tools (Icarus Verilog and GTKWave) and compares the results with a cloud-based simulation tool (Makerchip).
+
+---
+  
+
+
+  
+</details>
+
 
 
