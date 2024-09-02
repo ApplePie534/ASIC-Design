@@ -1437,5 +1437,76 @@ This lab demonstrates the process of simulating a RISC-V design using traditiona
   
 </details>
 
+<details>
+  <summary>Lab 9</summary>
+  
+  ### To generate waveform for DAC and PLL peripheral
+
+  The VSDBabySoC is a compact yet powerful SoC based on the RISCV architecture. It was designed with the primary goal of testing three open-source IP cores together for the first time and calibrating the analog components. The SoC includes an RVMYTH microprocessor, an 8x-PLL for stable clock generation, and a 10-bit DAC for communication with other analog devices.
+
+  ![image](https://github.com/user-attachments/assets/313d5791-4a03-4f1c-a402-e4f0021cf430)
+
+  ### BabySoC Simulation
+  Developing and simulating the complete micro-architecture of a RISC-V CPU is a complex task. For this simulation, we'll focus on incorporating two key IP blocks: PLL and DAC.
+
+### PLL (Phase-Locked Loop)
+
+A **Phase-Locked Loop (PLL)** is a control system used to synchronize the phase of an output signal with a reference signal. It’s commonly used in various applications like:
+
+- **Clock Generation and Synchronization**: In digital circuits, PLLs are used to generate a stable clock signal or synchronize different clock signals.
+- **Frequency Synthesis**: PLLs can create a new frequency signal that is a multiple or fraction of a reference frequency.
+- **Signal Demodulation**: In communication systems, PLLs can demodulate signals by locking onto the phase of the incoming signal.
+
+A basic PLL consists of three main components:
+1. **Phase Detector (PD)**: Compares the phase of the input signal with the phase of the output signal.
+2. **Low Pass Filter (LPF)**: Smooths out the output of the phase detector to remove high-frequency components.
+3. **Voltage-Controlled Oscillator (VCO)**: Generates the output signal whose frequency is adjusted based on the output of the low pass filter.
+
+### DAC (Digital-to-Analog Converter)
+
+A **Digital-to-Analog Converter (DAC)** is a device that converts digital data (usually binary) into an analog signal. DACs are used in a variety of applications, such as:
+
+- **Audio Systems**: Converting digital audio signals (from CDs, computers, etc.) into analog signals that can be amplified and played through speakers.
+- **Signal Generation**: Producing analog signals for testing and control purposes.
+- **Video Systems**: Converting digital video signals into analog signals for display on analog monitors or TVs.
+
+DACs work by taking discrete digital values and converting them into a continuous voltage or current. The quality of a DAC is often measured by its resolution (the number of bits it uses to represent the digital value) and its sampling rate.
+  
+# Simulation Steps
+
+1. Clone this repo: https://github.com/Subhasis-Sahu/BabySoC_Simulation.git using the following command.
+
+   ```
+   git clone https://github.com/Subhasis-Sahu/BabySoC_Simulation.git
+   ```
+   
+   ```
+   cd BabySoC_Simulation
+   ```
+
+3. Change the rvmyth.v file.
+   ![image](https://github.com/user-attachments/assets/495285bb-1203-4103-ae71-067ecd63c14e)
+
+   ![image](https://github.com/user-attachments/assets/1e9868a5-7a09-45cd-9289-1313b1bdd34b)
+
+4. Use the following commands
+   ```
+   iverilog -o ./pre_synth_sim.out -DPRE_SYNTH_SIM src/module/testbench.v -I src/include -I src/module/
+   ```
+   ```
+   ./pre_synth_sim.out
+   ```
+   ![image](https://github.com/user-attachments/assets/6d0ba390-d209-4f6d-b559-141901085170)
+
+6. Open GTKWave
+   ```
+   gtkwave pre_synth_sim.vcd
+   ```
+
+### Waveforms
+![image](https://github.com/user-attachments/assets/dc3e9210-0bb4-4911-b7d7-9bfb4160c315)
+
+</details>
+
 
 
