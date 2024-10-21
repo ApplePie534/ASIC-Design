@@ -1,4 +1,4 @@
-# ASIC-Design
+![image](https://github.com/user-attachments/assets/c96d2bf1-623c-4d36-8835-3d388607b45b)# ASIC-Design
 
 <details>
   <summary>Lab 1</summary>
@@ -1817,6 +1817,494 @@ write_verilog -noattr mult_2.v
 ![image](https://github.com/user-attachments/assets/2d916528-f48d-4aa9-99fe-09b6b18fa94a)
 ![image](https://github.com/user-attachments/assets/f522980d-da5b-4723-a72d-360d3eb43081)
 ![image](https://github.com/user-attachments/assets/4bb44e57-4de8-4aff-8ee6-f10184e3ca36)
+
+
+# Day 3
+
+### Logic Circuits
+
+Combinational circuits are time-independent, meaning they don’t rely on previous inputs to produce an output. In contrast, sequential circuits depend on clock cycles and consider both present and past inputs to generate their outputs.
+
+### 3.1. Introduction to Logic Optimizations
+
+#### Combinational Logic Optimization
+
+**Why is combinational logic optimization important?**
+- The main goal is to reduce logic complexity and create a more efficient design.
+  - Optimized designs lead to significant savings in both area and power consumption.
+
+**Types of Combinational Optimizations:**
+
+1. **Constant Propagation**
+   - A straightforward optimization technique.
+  
+2. **Boolean Logic Optimization**
+   - Techniques like Karnaugh Maps and Quine-McCluskey are used to simplify logic.
+
+---
+
+#### Constant Propagation
+
+In constant propagation, inputs that don’t affect the output are ignored or simplified. This reduces the complexity of the combinational logic, leading to area and power savings.
+
+Example:
+
+Y = ((AB) + C)'
+
+If A = 0, then:
+
+Y = (0 + C)' = C'
+
+---
+
+#### Boolean Logic Optimization
+
+Boolean logic optimization simplifies complex boolean expressions using the laws of boolean algebra.
+
+For instance:
+
+```verilog
+assign y = a ? (b ? c : (c ? a : 0)) : (!c)
+```
+
+can be simplified as:
+
+```verilog
+y = a'c' + abc + ab'c
+y = a'c' + ac(b + b')
+y = a'c' + ac
+y = a XNOR c
+```
+
+---
+
+### Sequential Logic Optimization
+
+**Types of Sequential Optimizations:**
+
+1. **Basic Techniques:**
+   - Sequential Constant Propagation.
+
+2. **Advanced Techniques:**
+   - State Optimization.
+   - Retiming.
+   - Sequential Logic Cloning (Floorplan-Aware Synthesis).
+  
+### COMBINATIONAL LOGIC OPTIMIZATION
+
+## Design infers 2 input AND Gate:
+```
+1. yosys
+2. read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+3. read_verilog opt_check.v
+4. synth -top opt_check
+5. abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+6. opt_clean -purge
+7. show
+```
+
+![image](https://github.com/user-attachments/assets/e5bb7446-7bc7-478b-b0aa-b7184be0131c)
+![image](https://github.com/user-attachments/assets/79c494ff-bddd-4faf-9045-b23426bd8f46)
+![image](https://github.com/user-attachments/assets/71e9d336-2d18-4ade-bef2-1c71ab6a2646)
+
+## Design infers 2 input OR Gate:
+```
+1. yosys
+2. read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+3. read_verilog opt_check2.v
+4. synth -top opt_check2
+5. abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+6. opt_clean -purge
+7. show
+```
+
+![image](https://github.com/user-attachments/assets/e573791f-25ec-45e3-8fe6-99c0983b581f)
+![image](https://github.com/user-attachments/assets/dee55aeb-b5c4-494b-835a-76c7d96f3904)
+![image](https://github.com/user-attachments/assets/51dec145-c1a4-407c-8111-718f6193da51)
+
+## Design infers 3 input AND Gate:
+
+```
+1. yosys
+2. read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+3. read_verilog opt_check3.v
+4. synth -top opt_check3
+5. abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+6. opt_clean -purge
+7. show
+```
+![image](https://github.com/user-attachments/assets/877c5266-8211-4c91-a1bb-22cca030904f)
+![image](https://github.com/user-attachments/assets/c2268dba-7e2b-4fa2-b0b7-bfe3966de6c4)
+![image](https://github.com/user-attachments/assets/4b408588-6b1e-4d35-8321-7439c753346f)
+
+## Design infers 2 input XNOR Gate (3 input Boolean Logic)
+```
+1. yosys
+2. read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+3. read_verilog opt_check4.v
+4. synth -top opt_check4
+5. abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+6. opt_clean -purge
+7. show
+```
+![image](https://github.com/user-attachments/assets/96221d03-7b9c-4a06-a333-2c0a895225f8)
+![image](https://github.com/user-attachments/assets/6634b36d-73b1-45a0-9826-01bd2492951a)
+![image](https://github.com/user-attachments/assets/f81bb4ce-3bdb-4e72-83f1-9f7a4acf3cb6)
+
+## Sequential Logic Optimizations
+### Example 1:
+
+Verilog code:
+```
+module dff_const1(input clk, input reset, output reg q);
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+		q <= 1'b0;
+	else
+		q <= 1'b1;
+end
+endmodule
+```
+
+For netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog dff_const1.v
+synth -top dff_const1
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr dff_const1_net.v
+```
+![image](https://github.com/user-attachments/assets/544c3667-0bae-48ce-8aa4-a2abdeb85e78)
+![image](https://github.com/user-attachments/assets/97a10b0a-e86b-4390-abba-3c3a40364509)
+![image](https://github.com/user-attachments/assets/2d3578ff-f790-4ec3-b724-0af20183edf4)
+
+GTKWave Output:
+```
+iverilog dff_const1.v tb_dff_const1.v
+./a.out
+gtkwave tb_dff_const1.vcd
+```
+![image](https://github.com/user-attachments/assets/adcba227-d956-4584-a846-5ca9560f3cd8)
+
+### Example 2:
+
+Verilog code:
+
+```
+module dff_const2(input clk, input reset, output reg q);
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+		q <= 1'b1;
+	else
+		q <= 1'b1;
+end
+endmodule
+```
+For netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog dff_const2.v
+synth -top dff_const2
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr dff_const2_net.v
+```
+
+![image](https://github.com/user-attachments/assets/3a686361-0579-46a9-95c3-0308652a8b3e)
+![image](https://github.com/user-attachments/assets/7d2f77f7-8706-46db-8ac5-51bb23353458)
+![image](https://github.com/user-attachments/assets/b433b1f4-8ddc-4f27-8191-48a18fe39604)
+
+GTKWave Output:
+```
+iverilog dff_const2.v tb_dff_const2.v
+./a.out
+gtkwave tb_dff_const2.vcd
+```
+![image](https://github.com/user-attachments/assets/08502db5-7fd8-4c1f-bbb0-9e4e84923c91)
+
+### Example 3:
+
+Verilog code:
+
+```
+module dff_const3(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b1;
+		q1 <= 1'b0;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+endmodule
+```
+For netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog dff_const3.v
+synth -top dff_const3
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr dff_const3_net.v
+```
+![image](https://github.com/user-attachments/assets/9afa20ea-967f-4120-b651-c49dccebccf8)
+![image](https://github.com/user-attachments/assets/419bce34-7849-488b-a77a-731c9256edcb)
+![image](https://github.com/user-attachments/assets/8a4be240-026a-497c-a210-e821c15becd7)
+
+GTKWave Output:
+```
+iverilog dff_const3.v tb_dff_const3.v
+./a.out
+gtkwave tb_dff_const3.vcd
+```
+![image](https://github.com/user-attachments/assets/a061704a-b042-4b38-949d-91d4e7baf66c)
+
+### Example 4:
+
+Verilog code:
+
+```
+module dff_const4(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b1;
+		q1 <= 1'b1;
+	end
+else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+endmodule
+```
+For netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog dff_const4.v
+synth -top dff_const4
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr dff_const4_net.v
+```
+![image](https://github.com/user-attachments/assets/d631da6a-da8d-4934-9341-6bf9dd7105ea)
+![image](https://github.com/user-attachments/assets/26b3def2-16eb-4155-9112-eccfcee3a5ae)
+![image](https://github.com/user-attachments/assets/bb8f5c32-9500-478f-b832-da15d33f97f9)
+
+GTKWave Output:
+```
+iverilog dff_const4.v tb_dff_const4.v
+./a.out
+gtkwave tb_dff_const4.vcd
+```
+
+![image](https://github.com/user-attachments/assets/34cdbb2d-e2b5-4d25-a362-6895f68a9e5f)
+
+## Example 5:
+
+Verilog code:
+```
+module dff_const5(input clk, input reset, output reg q);
+reg q1;
+always @(posedge clk, posedge reset)
+	begin
+		if(reset)
+		begin
+			q <= 1'b0;
+			q1 <= 1'b0;
+		end
+	else
+		begin
+			q1 <= 1'b1;
+			q <= q1;
+		end
+	end
+endmodule
+```
+
+For netlist:
+
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog dff_const5.v
+synth -top dff_const5
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr dff_const5_net.v
+```
+
+![image](https://github.com/user-attachments/assets/70f8b83e-b904-4513-8070-1b37ab5422a5)
+![image](https://github.com/user-attachments/assets/b99b3dbc-f202-4b03-81d5-cb637d3f8fd4)
+![image](https://github.com/user-attachments/assets/8d7d4ce9-31ff-482c-8d86-18e272fc1516)
+
+GTKWave Output:
+
+```
+iverilog dff_const5.v tb_dff_const5.v
+./a.out
+gtkwave tb_dff_const5.vcd
+```
+
+![image](https://github.com/user-attachments/assets/34d60ea6-b149-4d26-89aa-5baa0f370320)
+
+## Sequential Logic Optimizations for unused outputs
+
+### Example 1:
+Verilog code:
+
+```
+module counter_opt (input clk , input reset , output q);
+reg [2:0] count;
+assign q = count[0];
+always @(posedge clk ,posedge reset)
+begin
+	if(reset)
+		count <= 3'b000;
+	else
+		count <= count + 1;
+end
+endmodule
+```
+
+Run the below code for netlist:
+
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog counter_opt.v
+synth -top counter_opt
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr counter_opt_net.v
+```
+
+![image](https://github.com/user-attachments/assets/ba4b7135-1dce-4de4-84e4-552c74318a43)
+![image](https://github.com/user-attachments/assets/6e905ba0-3605-4c7f-846a-1d5a1ca73fc2)
+![image](https://github.com/user-attachments/assets/aab0d571-cdf5-41e1-8872-ec38b8f4b005)
+
+GTKWave Output:
+
+```
+iverilog counter_opt.v tb_counter_opt.v
+./a.out
+gtkwave tb_counter_opt.vcd
+```
+
+![image](https://github.com/user-attachments/assets/d15f4800-297a-416b-9f43-80136d7a6ea8)
+
+### Modified counter logic:
+
+Verilog code:
+
+```
+module counter_opt (input clk , input reset , output q);
+reg [2:0] count;
+assign q = {count[2:0]==3'b100};
+always @(posedge clk ,posedge reset)
+begin
+if(reset)
+	count <= 3'b000;
+else
+	count <= count + 1;
+end
+endmodule
+```
+Run the below code for netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog counter_opt.v
+synth -top counter_opt
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+write_verilog -noattr counter_opt_net.v
+```
+
+![image](https://github.com/user-attachments/assets/2a428be4-b20b-4ce8-a6a8-da191654e5fa)
+![image](https://github.com/user-attachments/assets/181366fb-52d5-43fb-93ff-43cb3b0fc3a0)
+![image](https://github.com/user-attachments/assets/cfdd627b-693b-4ad0-8ee0-4efc6c8aac96)
+
+GTKWave Output:
+```
+iverilog counter_opt.v tb_counter_opt.v
+./a.out
+gtkwave tb_counter_opt.vcd
+```
+![image](https://github.com/user-attachments/assets/3a610b6f-23b3-4e4d-ab99-2840f1e871ed)
+
+
+# Day 4
+
+Gate Level Simulation (GLS) is an important verification step in digital circuit design. It involves simulating the synthesized netlist, which is a more detailed, lower-level version of the design. A testbench is used to verify both the logic and timing behavior of the netlist. By comparing the simulated outputs with the expected results, GLS helps ensure that the synthesis process has not introduced any errors and that the design satisfies its performance and timing requirements.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
