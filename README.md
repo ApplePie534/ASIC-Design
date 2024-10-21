@@ -1511,6 +1511,8 @@ DACs work by taking discrete digital values and converting them into a continuou
 <details>
   <summary>Lab 10</summary>
   
+  # Day 1
+  
   ### RTL Design using verilog
 
   RTL (Register-Transfer Level) design models synchronous digital circuits by outlining how data moves between hardware registers and the logic operations performed on signals. Verilog is often used to write these hardware descriptions at a high level.
