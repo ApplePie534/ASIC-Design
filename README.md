@@ -1578,6 +1578,7 @@ Synthesis is the process of converting an RTL (Register-Transfer Level) design, 
 ```
 yosys
 ```
+
 ![image](https://github.com/user-attachments/assets/571caa55-b371-4951-8b78-282a2ac6ced8)
 
 ```
@@ -1587,12 +1588,15 @@ synth -top good_mux
 abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 show
 ```
+
 ![image](https://github.com/user-attachments/assets/ab6d791b-43a2-4eef-9efe-365ca11829be)
 
 ```
 write_verilog -noattr good_mux_netlist.v
 !vim good_mux_netlist.v
 ```
+
+![image](https://github.com/user-attachments/assets/352d981c-4a68-4eae-b7c1-dfbe719d1891)
 
 </details>
 
