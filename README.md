@@ -2263,6 +2263,7 @@ gtkwave tb_counter_opt.vcd
 
 Gate Level Simulation (GLS) is an important verification step in digital circuit design. It involves simulating the synthesized netlist, which is a more detailed, lower-level version of the design. A testbench is used to verify both the logic and timing behavior of the netlist. By comparing the simulated outputs with the expected results, GLS helps ensure that the synthesis process has not introduced any errors and that the design satisfies its performance and timing requirements.
 
+<img width="855" alt="1" src="https://github.com/user-attachments/assets/e860bad0-240f-49c3-96cb-5d578bca2761">
 
 
 
