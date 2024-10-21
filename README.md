@@ -2265,6 +2265,151 @@ Gate Level Simulation (GLS) is an important verification step in digital circuit
 
 <img width="855" alt="1" src="https://github.com/user-attachments/assets/e860bad0-240f-49c3-96cb-5d578bca2761">
 
+Sensitivity lists are vital for ensuring correct circuit behavior. An incomplete sensitivity list can result in unintended latches. The execution behavior of blocking and non-blocking assignments in always blocks differs. Misusing blocking assignments may inadvertently generate latches, leading to mismatches between synthesis and simulation. To prevent these problems, it's important to thoroughly assess circuit behavior and verify that both the sensitivity list and assignments correspond to the intended functionality.
+
+## GLS Simulation
+
+## Example 1:
+
+Verilog code:
+```
+module ternary_operator_mux (input i0 , input i1 , input sel , output y);
+assign y = sel?i1:i0;
+endmodule
+```
+Simulation:
+```
+iverilog ternary_operator_mux.v tb_ternary_operator_mux.v
+./a.out
+gtkwave tb_ternary_operator_mux.vcd
+```
+![image](https://github.com/user-attachments/assets/18a2ac81-a5f9-45e5-88a0-ed3ae3e92cdc)
+
+Netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib  
+read_verilog ternary_operator_mux.v
+synth -top ternary_operator_mux
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib 
+show
+write_verilog -noattr ternary_operator_mux_net.v
+```
+![image](https://github.com/user-attachments/assets/7bfe5b77-4248-42e4-bf54-6ca2d718a7f7)
+![image](https://github.com/user-attachments/assets/3f82ed5a-947d-4b31-ab86-9a3791730a19)
+![image](https://github.com/user-attachments/assets/06cb8af4-93e2-4acf-b290-33697598986d)
+
+GLS:
+```
+iverilog ../my_lib/verilog_model/primitives.v ../my_lib/verilog_model/sky130_fd_sc_hd.v ternary_operator_mux_net.v tb_ternary_operator_mux.v
+./a.out
+gtkwave tb_ternary_operator_mux.vcd
+```
+![image](https://github.com/user-attachments/assets/bbcafd9f-c8d3-425d-a209-1f2cc6bfdbc9)
+
+In this case there is no mismatch between the waveforms before and after synthesis
+
+### Example 2:
+
+Verilog code:
+```
+module bad_mux (input i0 , input i1 , input sel , output reg y);
+always @ (sel)
+begin
+	if(sel)
+		y <= i1;
+	else 
+		y <= i0;
+end
+endmodule
+```
+Simulation:
+```
+iverilog bad_mux.v tb_bad_mux.v
+./a.out
+gtkwave tb_bad_mux.vcd
+```
+
+![image](https://github.com/user-attachments/assets/f73206b8-c31d-4fbf-a933-f24fe52d94f1)
+
+Netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib  
+read_verilog bad_mux.v
+synth -top bad_mux
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib 
+show
+write_verilog -noattr bad_mux_net.v
+```
+
+![image](https://github.com/user-attachments/assets/68e4e734-4a74-48ec-9b2a-aec30f8bea10)
+![image](https://github.com/user-attachments/assets/572c31dd-25b1-4b5a-a022-31916008e713)
+![image](https://github.com/user-attachments/assets/d9838a7f-1db9-4b7c-bf50-0f0726594afb)
+
+GLS:
+```
+iverilog ../my_lib/verilog_model/primitives.v ../my_lib/verilog_model/sky130_fd_sc_hd.v bad_mux_net.v tb_bad_mux.v
+./a.out
+gtkwave tb_bad_mux.vcd
+```
+![image](https://github.com/user-attachments/assets/5d87cd32-608a-453d-87ef-b3a7032aefd6)
+
+In this case there is a synthesis and simulation mismatch. While performing synthesis yosys has corrected the sensitivity list error.
+
+## Labs on Synthesis-Simulation mismatch for blocking statements
+
+Verilog code:
+```
+module blocking_caveat (input a , input b , input  c, output reg d); 
+reg x;
+always @ (*)
+begin
+d = x & c;
+x = a | b;
+end
+endmodule
+```
+Simulation:
+```
+iverilog blocking_caveat.v tb_blocking_caveat.v
+./a.out
+gtkwave tb_blocking_caveat.vcd
+```
+![image](https://github.com/user-attachments/assets/895af03e-ac83-4199-8bb3-6bfd1b852ae8)
+
+Netlist:
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib  
+read_verilog blocking_caveat.v
+synth -top blocking_caveat
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib 
+show
+write_verilog -noattr blocking_caveat_net.v
+```
+![image](https://github.com/user-attachments/assets/d9ee6a40-b01b-42b5-88e1-1007d7958c01)
+![image](https://github.com/user-attachments/assets/448bea87-de96-4d4f-a3d3-11b4d9844f7f)
+![image](https://github.com/user-attachments/assets/939222e6-81fc-47cc-ae39-154445e5e5ad)
+
+GLS:
+```
+iverilog ../my_lib/verilog_model/primitives.v ../my_lib/verilog_model/sky130_fd_sc_hd.v blocking_caveat_net.v tb_blocking_caveat.v
+./a.out
+gtkwave tb_blocking_caveat.vcd
+```
+
+![image](https://github.com/user-attachments/assets/2c68bd93-3c6c-4707-a7f1-3edeb93bc182)
+
+In this case there is a synthesis and simulation mismatch. While performing synthesis yosys has corrected the latch error.
+
+
+
+
+
+
+
+
 
 
 
