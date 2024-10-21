@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/c96d2bf1-623c-4d36-8835-3d388607b45b)# ASIC-Design
+# ASIC-Design
 
 <details>
   <summary>Lab 1</summary>
