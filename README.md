@@ -1511,9 +1511,9 @@ DACs work by taking discrete digital values and converting them into a continuou
 <details>
   <summary>Lab 10</summary>
   
-  # Day 1
-  
   ### RTL Design using verilog
+
+  # Day  1
 
   RTL (Register-Transfer Level) design models synchronous digital circuits by outlining how data moves between hardware registers and the logic operations performed on signals. Verilog is often used to write these hardware descriptions at a high level.
 
@@ -1599,6 +1599,241 @@ write_verilog -noattr good_mux_netlist.v
 ```
 
 ![image](https://github.com/user-attachments/assets/352d981c-4a68-4eae-b7c1-dfbe719d1891)
+
+
+# Day 2
+
+Command to open the libary file
+```
+$ vim ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+```
+To shut off the background colors/ syntax off:
+```
+: syn off
+```
+To enable the line numbers
+```
+: se nu
+```
+![image](https://github.com/user-attachments/assets/ea25e36e-cd4b-432f-bcfd-eb172b8fdd3d)
+
+For a design to work, there are three important parameters that determines how the Silicon works: Process (Variations due to Fabrications), Voltage (Changes in the behavior of the circuit) and Temperature (Sensitivity of semiconductors). Libraries are characterized to model these variations.
+
+### .lib(liberty) File contents
+
+The timing data of standard cells is provided in the liberty format. Every .lib file will provide timing, power, noise, area information for a single corner ie process,voltage, temperature etc.
+
+1. Library
+     - general information common to all cells in the library.
+2. Cell
+    - specific information about each standard cell.
+3. Pin
+    - Timing, power, capacitance, leakage functionality etc characteristics for each pin in each cell. 
+
+![image](https://github.com/user-attachments/assets/c13391db-a17c-4cf0-a701-f7af921f02cb)
+
+### Hierarchial synthesis vs Flat synthesis
+
+Open file
+```
+vim multiple_modules.v
+```
+Use yosys
+```
+yosys
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog multiple_modules.v
+synth -top multiple_modules
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show multiple_modules
+write_verilog -noattr multiple_modules_hier.v
+!vim multiple_modules_hier.v
+```
+### Multiple Modules:
+![image](https://github.com/user-attachments/assets/3e262a05-34dd-417f-bd92-a218529eca3d)
+
+### Logic:
+![image](https://github.com/user-attachments/assets/e6c3dc0c-db04-4bf6-8b12-e3137ed0f1cb)
+
+### Netlist:
+![image](https://github.com/user-attachments/assets/bf64f6aa-7fea-4f4e-9876-93c83370f8f5)
+
+
+## Flat Synthesis
+
+Merges all hierarchical modules in the design into a single module to create a flat netlist
+
+To flatten the netlist
+```
+flatten
+```
+Writing the netlist in a crisp manner and to view it
+```
+write_verilog -noattr multiple_modules_flat.v
+!vim multiple_modules_flat.v
+```
+![image](https://github.com/user-attachments/assets/4f1418d9-1774-4d20-9375-382032449c50)
+
+![image](https://github.com/user-attachments/assets/5ffa65ee-da96-42e5-b184-3b64d44e0fa2)
+
+### Module Level Synthesis
+
+This method is preferred when multiple instances of same module are used. The synthesis is carried out once and is replicate multiple times, and the multiple instances of the same module are stitched together in the top module.
+
+```
+1. yosys
+2. read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+3. read_verilog multiple_modules.v
+4. synth -top sub_module1
+5. abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+6. show
+```
+
+![image](https://github.com/user-attachments/assets/9fb8c1ef-95f0-4540-b0bb-bc6a50ee4929)
+
+
+## Various Flop coding styles and optimization
+
+When an input signal changes in a digital design, the output shifts after a certain propagation delay. Every logic gate introduces some delay to signals, and these delays can cause both expected and unexpected transitions in the output. These unexpected transitions, known as *glitches*, occur when the output momentarily differs from the expected value. Glitches often happen when delays along different signal paths vary, causing incorrect outputs when these signals meet at an output gate. In general, the more combinational logic present, the more glitch-prone the output becomes, leading to instability until the output value settles.
+
+### Flip-Flop Overview
+
+A D flip-flop is a sequential element that captures the input value (denoted by `d`) at a specific clock edge. It’s a key component in digital logic circuits. D flip-flops come in two variations: **Rising-Edge D Flip-Flop** (triggered on the clock's rising edge) and **Falling-Edge D Flip-Flop** (triggered on the clock's falling edge).
+
+Each flip-flop needs to start with an initial state, otherwise the combinational logic feeding into it might produce invalid (garbage) values. To manage this, control pins like *Set* and *Reset* are included in flip-flops, and these controls can operate either *synchronously* or *asynchronously*.
+
+### Asynchronous Reset
+
+In asynchronous reset, the flip-flop's always block is evaluated whenever there’s a change in the clock or a change in the set/reset signals. The circuit is triggered by the clock's positive edge, but when the reset or set signal is activated, the output `q` immediately changes—regardless of the clock’s state. This means that the reset or set takes effect instantly, without waiting for the next clock edge.
+
+### Synchronous Reset
+In a synchronous reset, the control signals (set/reset) only take effect at the active edge of the clock (rising or falling, depending on the flip-flop design). Unlike asynchronous reset, the flip-flop waits for the clock edge to trigger any changes. When the clock edge occurs, if the reset signal is active, the output will be reset to the specified state. This method ensures that set/reset behavior is tied to the timing of the clock, which can simplify the timing analysis and prevent glitches or other timing issues in the circuit.
+
+## FLIP FLOP SIMULATION
+
+Steps Followed for analysing Asynchronous behavior:
+
+1. Load the design in iVerilog by giving the verilog and testbench file names
+```
+iverilog dff_asyncres.v tb_dff_asyncres.v 
+```
+2. List so as to ensure that it has been added to the simulator
+```
+ls
+```
+4. To dump the VCD file
+```
+./a.out
+```
+6. To load the VCD file in GTKwaveform
+```
+gtkwave tb_dff_asyncres.vcd
+```
+![image](https://github.com/user-attachments/assets/6011bba5-bd98-4468-b261-6444b5974100)
+
+### Asynchronus reset:
+![image](https://github.com/user-attachments/assets/037c8cce-e122-4f88-91fa-3d8a611d726f)
+
+### Asynchronous set:
+![image](https://github.com/user-attachments/assets/7f1c623c-31d2-40ef-a36e-ba09c3edc83a)
+
+### Synchronous reset:
+![image](https://github.com/user-attachments/assets/76d4d4ac-46c1-49b1-84d0-4b0831c76716)
+
+## FLIP FLOP SYNTHESIS
+
+
+```bash
+1. Invoke Yosys
+yosys
+
+2. Read library 
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+3. Read Design
+read_verilog dff_asyncres.v
+
+4. Synthesize Design - this controls which module to synthesize
+synth -top dff_asyncres
+
+5. There will be a separate flop library under a standard library, but here we point back to the same library and tool looks only for DFF instead of all cells
+dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+6. Generate Netlist
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+7. Realizing Graphical Version of Logic for single modules
+show  
+```
+![image](https://github.com/user-attachments/assets/859af59d-1e62-492a-838c-11fc31d4d3c6)
+![image](https://github.com/user-attachments/assets/c867ea43-2451-4e2b-adb8-53d328acb11a)
+
+### Statistics of D FLipflop with Asynchronous set
+
+![image](https://github.com/user-attachments/assets/7f466349-579f-4a03-8441-15eaa847edb1)
+![image](https://github.com/user-attachments/assets/4d373f92-074a-44ed-bf11-c725d33d90fa)
+
+### Statistics of D FLipflop with Synchronous Reset
+![image](https://github.com/user-attachments/assets/6217aff7-cd93-4bb1-b08a-df10fba68564)
+![image](https://github.com/user-attachments/assets/ef2a0bde-b714-4f9a-99f2-0784416c49e6)
+
+## Interesting Optimizations
+
+```bash
+# Open the modules using vim
+vim mult_*.v -o
+
+# Invoke Yosys
+yosys
+
+# Read library
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Read Design
+read_verilog mult_2.v
+
+# Synthesize Design - this controls which module to synthesize
+synth -top mul2
+
+# Generate Netlist
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+
+# Realizing Graphical Version of Logic for single modules
+show 
+
+# Writing the netlist in a crisp manner
+write_verilog -noattr mult_2.v
+
+# Open the netlist in vim
+!vim mult_2.v
+```
+### (i) mult_2.v
+![image](https://github.com/user-attachments/assets/101e75e2-8c85-4109-9fc0-f00bfa715771)
+![image](https://github.com/user-attachments/assets/78f1a737-9798-41a7-8fb9-fcb40a0ffd45)
+![image](https://github.com/user-attachments/assets/d72b06ce-4da0-4cc0-94d1-b838262fd77c)
+![image](https://github.com/user-attachments/assets/77ad4583-945d-47a3-a7d1-59f5c78cf4b3)
+
+### (ii) mult_8.v
+![image](https://github.com/user-attachments/assets/2d916528-f48d-4aa9-99fe-09b6b18fa94a)
+![image](https://github.com/user-attachments/assets/f522980d-da5b-4723-a72d-360d3eb43081)
+![image](https://github.com/user-attachments/assets/4bb44e57-4de8-4aff-8ee6-f10184e3ca36)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </details>
 
