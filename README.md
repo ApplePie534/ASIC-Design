@@ -1508,5 +1508,93 @@ DACs work by taking discrete digital values and converting them into a continuou
 
 </details>
 
+<details>
+  <summary>Lab 10</summary>
+  
+  ### RTL Design using verilog
+
+  RTL (Register-Transfer Level) design models synchronous digital circuits by outlining how data moves between hardware registers and the logic operations performed on signals. Verilog is often used to write these hardware descriptions at a high level.
+
+To verify the functionality of the design, simulation tools like Verilog are employed. Simulators monitor the input signals, and whenever changes occur, they compute the corresponding output signals based on the circuit design. A key part of testing the design is creating a test bench, which applies test vectors (input patterns) to the circuit to confirm it behaves according to the specifications.
+
+Once the simulation is complete, the results are stored in a VCD (Value Change Dump) file. This file tracks how the signals change over time and can be loaded into GTKWave, a waveform viewer. GTKWave allows designers to inspect signal interactions, timing, and overall circuit behavior. By analyzing the waveforms, designers can debug and validate that the circuit is operating correctly and meets the required specifications.
+
+A test bench serves as a simulation framework used to verify digital circuit designs. It provides input stimuli (test vectors) to the design and monitors the output responses to ensure the circuit functions as expected. Test benches, typically written in the same hardware description language as the design (like Verilog), are critical for debugging and validating RTL designs.
+
+![image](https://github.com/user-attachments/assets/67f2ef39-5140-4b4d-85be-d3ed537bcf3f)
+![image](https://github.com/user-attachments/assets/28a9273b-3953-4e40-aaf2-a3534289ce8f)
+
+```
+mkdir VLSI
+cd VLSI
+```
+
+```
+git clone https://github.com/kunalg123/vsdflow.git
+git clone https://github.com/kunalg123/sky130RTLDesignAndSynthesisWorkshop.git
+```
+
+![image](https://github.com/user-attachments/assets/6bc6599a-75ce-48be-9d08-3710b2a3fc3e)
+
+### Simulation using iverilog simulator - 2:1 multiplexer rtl design
+
+Compile the verilog and testbench file using the command and open GTKwave
+```
+iverilog good_mux.v tb_good_mux.v
+./a.out
+gtkwave tb_good_mux.vcd
+```
+
+![image](https://github.com/user-attachments/assets/cc83cf9e-8506-4098-ae7d-a51412eadf13)
+
+To see the contents of the file :
+
+```
+vim tb_good_mux.v -o good_mux.v
+```
+
+![image](https://github.com/user-attachments/assets/4f509470-d31b-4f7c-a14b-dbae124938e7)
+
+### Yosys
+
+![image](https://github.com/user-attachments/assets/d073d4e7-2563-4081-88c8-09289c7f2849)
+
+![image](https://github.com/user-attachments/assets/88c3b3e3-3cfc-497e-8a79-439b01589bbe)
+
+Synthesis is the process of converting an RTL (Register-Transfer Level) design, written in a hardware description language like Verilog, into a gate-level version that can be physically implemented. This gate-level model is known as a netlist, which represents the design using interconnected logic gates. The synthesis process involves several steps:
+
+1. **RTL to Gate-Level Translation**: The RTL code is transformed into a netlist, which is essentially a collection of logic gates and their connections. The inputs and outputs in this netlist remain consistent with the original RTL design, allowing the same test bench from the simulation phase to verify the synthesized design.
+
+2. **Liberty (.lib) File**: This is a library file containing descriptions of various logic gates, such as AND, OR, and NOT. These gates come in different forms—some are designed for high speed, while others are optimized for low power or small area. The synthesis tool chooses from these gates depending on the design requirements.
+
+    - **Fast Cells**: These gates prioritize speed, allowing for quicker signal transitions. However, they consume more power and take up more area due to their larger transistor sizes. Fast cells are used when performance is a critical factor.
+    
+    - **Slow Cells**: These gates are more energy-efficient and smaller in size, but they operate slower. They are useful in scenarios where reducing power consumption or area is more important than speed and help fix timing issues like hold-time violations.
+
+3. **Constraints**: During synthesis, constraint files play a vital role by instructing the tool on how to balance performance, power, and area. These files define the desired timing and performance goals, helping the synthesis tool make trade-offs in cell selection to ensure the design meets the required specifications for speed, power efficiency, and chip area.
+
+### Synthesis Commands
+
+```
+yosys
+```
+![image](https://github.com/user-attachments/assets/571caa55-b371-4951-8b78-282a2ac6ced8)
+
+```
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+read_verilog good_mux.v
+synth -top good_mux
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+show
+```
+![image](https://github.com/user-attachments/assets/ab6d791b-43a2-4eef-9efe-365ca11829be)
+
+```
+write_verilog -noattr good_mux_netlist.v
+!vim good_mux_netlist.v
+```
+
+</details>
+
 
 
