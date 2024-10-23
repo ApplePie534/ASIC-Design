@@ -2470,6 +2470,11 @@ iverilog -o ./pre_synth_sim.out -DPRE_SYNTH_SIM src/module/testbench.v -I src/in
 gtkwave pre_synth_sim.vcd
 ```
 
+![Screenshot from 2024-10-24 02-47-46](https://github.com/user-attachments/assets/3047f5ac-db8f-48f1-9f16-716102cd51a5)
+
+![Screenshot from 2024-10-24 02-52-45](https://github.com/user-attachments/assets/00bb913e-dcf9-4f81-9114-7602eccb6d48)
+
+It can be observed that the waveforms before (pre_synth_sim) and after (post_synth_sim) Yosys synthesis are the same.
 
 </details>
 
