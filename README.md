@@ -2405,68 +2405,70 @@ In this case there is a synthesis and simulation mismatch. While performing synt
 
 
 
+</details>
 
+<details>
+  <summary>Lab 11</summary>
 
+  ## Synthesizing RISC-V and comparing output with functional simulation.
 
+  Copy the `src` folder from your `BabySoC` folder to your `sky130RTLDesignAndSynthesisWorkshop` folder in your VLSI folder from previous lab.
 
+Now go the following Directory:
 
+```
+cd /home/anshu/VLSI/sky130RTLDesignAndSynthesisWorkshop/src/module
+```
 
+## Synthesis:
 
+```
+yosys
 
+read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 
+read_verilog clk_gate.v
 
+read_verilog rvmyth.v
 
+synth -top rvmyth
 
+abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
 
+write_verilog -noattr rvmyth_net.v
 
+!gedit rvmyth_net.v
 
+exit
+```
+  
+![image](https://github.com/user-attachments/assets/123a9572-bc14-46d5-bbf4-7ab3d37492dd)
 
+![image](https://github.com/user-attachments/assets/f33b7649-15e4-4922-9dd9-13067a01ef13)
+  
+Now to observe the output waveform of synthesised RISC-V
 
+```
+iverilog ../../my_lib/verilog_model/primitives.v ../../my_lib/verilog_model/sky130_fd_sc_hd.v rvmyth.v testbench.v vsdbabysoc.v avsddac.v avsdpll.v clk_gate.v
 
+./a.out
 
+gtkwave dump.vcd
+```
+![image](https://github.com/user-attachments/assets/11e30120-f2d3-4d61-b790-23d4ccb5c2df)
+![image](https://github.com/user-attachments/assets/6ac9f822-7172-4e79-adb9-428e53039bee)
 
+## RTL Simulations
 
+```
+cd BabySoC
 
+iverilog -o ./pre_synth_sim.out -DPRE_SYNTH_SIM src/module/testbench.v -I src/include -I src/module/
 
+./pre_synth_sim.out
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+gtkwave pre_synth_sim.vcd
+```
 
 
 </details>
