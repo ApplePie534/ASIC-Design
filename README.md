@@ -2602,5 +2602,38 @@ source sta_pvt.tcl
   
 </details>
 
+<details>
+	<summary>Lab 14</summary>
+
+# Advanced Physical Design using Openlane
+
+## Day 1 - Inception of open-source EDA, OpenLANE and Sky130 PDK
+
+### Package
+The package in an embedded board serves as the protective enclosure for the actual silicon chip, providing structural support and shielding it from physical damage. The package also routes signals through connections, commonly using wire bonding to link the internal chip to external pins or contacts, enabling integration with the circuit board.
+
+![image](https://github.com/user-attachments/assets/ff705527-2cae-4ada-960a-62f658889fac)
+
+
+### Chip
+A chip, also known as an integrated circuit (IC), is a miniaturized assembly of electronic circuits on a silicon substrate. It combines various components like processors, memory blocks, and I/O controllers to perform complex functions required in modern electronics, catering to applications ranging from simple processing tasks to high-performance computing.
+![image](https://github.com/user-attachments/assets/ccaeed9f-cdc0-474f-9423-4d0b090c3a8e)
+
+### Pads
+Pads are small metal regions located on either the chip or the package, designed as connection points for wiring or bonding. They enable the interface between the IC’s internal circuits and the outside world, facilitating power, ground, and data signal transfers across the system.
+
+### Core
+The core is the main functional area within a chip, where critical processing takes place. It contains the primary logic circuitry and computational units, typically optimized to achieve specific goals such as minimizing power usage or maximizing processing speed and efficiency.
+
+### Die
+A die is an individual chip cut from a larger silicon wafer, containing the integrated circuits before being encased in a package. It houses all of the necessary active elements and structures that allow the chip to function according to its design specifications.
+
+### IPs (Intellectual Properties)
+IPs, or Intellectual Properties, are reusable, pre-configured blocks of circuitry within a chip design, such as interfaces for USB, memory, or communication protocols. Licensing and reusing IPs help streamline the design process, allowing engineers to incorporate tested functionalities quickly without needing to create these elements from scratch.
+
+
+</details>
+
+
 
 
