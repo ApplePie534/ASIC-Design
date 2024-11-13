@@ -2627,9 +2627,124 @@ The core is the main functional area within a chip, where critical processing ta
 
 ### Die
 A die is an individual chip cut from a larger silicon wafer, containing the integrated circuits before being encased in a package. It houses all of the necessary active elements and structures that allow the chip to function according to its design specifications.
-
+![384578427-cfa2c482-59c5-4ad5-b74c-a027bfdf16b8](https://github.com/user-attachments/assets/49ff0164-ffec-4c0a-941e-7ee613b748d2)
 ### IPs (Intellectual Properties)
 IPs, or Intellectual Properties, are reusable, pre-configured blocks of circuitry within a chip design, such as interfaces for USB, memory, or communication protocols. Licensing and reusing IPs help streamline the design process, allowing engineers to incorporate tested functionalities quickly without needing to create these elements from scratch.
+![image](https://github.com/user-attachments/assets/74c20964-0174-48ba-8bcb-d2e0b49106c8)
+
+### Software to Hardware Flow
+
+To execute an application on hardware, a series of steps occur to prepare the code for the hardware's understanding. Initially, the application passes through a layer called system software, which converts the program into binary format—the language that hardware comprehends. The main components involved in this process are the Operating System (OS), Compiler, and Assembler.
+
+First, the OS organizes the application’s functions, typically written in high-level languages like C, C++, Java, or Python, and directs them to an appropriate compiler. The compiler then translates these high-level functions into low-level instructions specifically designed to align with the underlying hardware architecture.
+
+Following this, an assembler steps in to convert these architecture-specific instructions into binary machine code. This binary code is finally sent to the hardware, which executes the instructions and performs the tasks defined in the application.
+
+![image](https://github.com/user-attachments/assets/4a98150e-2feb-4159-ab4e-7ed021e6ff66)
+
+For example, consider a app running on a RISC-V core. Here, the OS might generate a small function in C, which is then passed to a compiler. The compiler outputs RISC-V-specific instructions, tailored to the architecture. These instructions are subsequently processed by the assembler, which converts them into binary code. This binary code then flows into the chip layout, where the hardware executes the desired functionality.
+
+![image](https://github.com/user-attachments/assets/c662b794-4805-4f93-8b76-1e441a564425)
+
+The compiler generates architecture-specific instructions, while the assembler produces the corresponding binary patterns. To execute these instructions on hardware, an RTL (written in a Hardware Description Language) is used to interpret and implement the instructions. This RTL design is then synthesized into a netlist, represented as interconnected logic gates. Finally, the netlist undergoes physical design implementation to be fabricated onto the chip.
+
+![image](https://github.com/user-attachments/assets/c06eeb7d-00ec-4ea1-8c7a-937cd1e61869)
+
+### Components of ASIC Design
+
+
+For open-source ASIC design implemantation, we require the following enablers to be readily available as open-source versions. They are
+
+- RTL Designs
+- EDA Tools
+- PDK Data
+
+### Simplified RTL to GDS flow
+![image](https://github.com/user-attachments/assets/9819c522-6e88-470a-afe8-f2fa04276b39)
+**RTL Design:** This stage involves describing the intended behavior of the circuit using Hardware Description Languages (HDLs) like Verilog or VHDL. RTL (Register Transfer Level) code defines the logic, data paths, and signal flow of the circuit.
+
+**RTL Synthesis:** In synthesis, the RTL code is translated into a gate-level netlist, which is a network of standard cells like AND gates, flip-flops, and multiplexers. The synthesis tool maps the design to these cells, optimizing for area, power, and timing requirements.
+
+**Floor and Power Planning:** This step partitions the chip’s area, places key components, and establishes a power grid and I/O layout. The layout is organized to optimize signal flow and power distribution, balancing area usage while minimizing power consumption and enhancing signal integrity through strategic placement of I/O pads and power cells.
+
+**Placement:** Here, the physical locations of the standard cells are assigned. The placement tool arranges cells to minimize wire length, reduce signal delays, and meet design constraints, balancing chip performance and efficient area use.
+
+**Clock Tree Synthesis (CTS):** Clock Tree Synthesis builds an optimized network to distribute the clock signal across the design. CTS ensures that all flip-flops and registers receive the clock signal evenly, reducing clock skew and enhancing timing consistency across the chip.
+
+**Routing:** After placement, routing establishes connections between components based on their locations. Routing tools optimize wire paths to maintain signal integrity, reduce congestion, and ensure adherence to design rules.
+
+**Sign-off:** This final verification stage ensures that the design meets all functionality, performance, power, and reliability requirements. Timing analysis checks for setup and hold time compliance, power analysis confirms power limits are respected, and physical verification validates that the layout adheres to manufacturing specifications. This step confirms that the design is fabrication-ready.
+
+**GDSII File Generation:** The finalized design is stored in a GDSII file, which includes all layout details for chip fabrication. This file acts as the blueprint used by manufacturers to create the photomasks needed for production, effectively transitioning the design into the physical chip manufacturing stage. 
+
+### OpenLane ASIC Flow
+![image](https://github.com/user-attachments/assets/050fb928-3fde-45d1-870c-a2041a80ea94)
+
+
+**RTL Synthesis, Technology Mapping, and Formal Verification:**  
+- **Tools:** Yosys (for RTL synthesis), ABC (for technology mapping and formal verification)
+
+**Static Timing Analysis (STA):**  
+- **Tools:** OpenSTA (for timing analysis)
+
+**Floor Planning:**  
+- **Tools:** init_fp (initial floorplanning), ioPlacer (I/O placement), pdn (power network planning), tapcell (tap cell insertion)
+
+**Placement:**  
+- **Tools:** RePLace (global placement), Resizer (optional cell resizing), OpenDP (detailed placement), OpenPhySyn (previously used for placement)
+
+**Clock Tree Synthesis (CTS):**  
+- **Tools:** TritonCTS (for clock tree synthesis)
+
+**Fill Insertion:**  
+- **Tools:** OpenDP (for filler placement)
+
+**Routing:**  
+- **Tools:** FastRoute (global routing), TritonRoute (detailed routing); previously, CU-GR was used for global routing and DR-CU for detailed routing.
+
+**SPEF Extraction (Standard Parasitic Exchange Format):**  
+- **Tools:** OpenRCX (for SPEF extraction), with SPEF-Extractor used previously
+
+**GDSII Streaming Out:**  
+- **Tools:** Magic, KLayout (for viewing, editing, and generating GDSII files)
+
+**Design Rule Checking (DRC):**  
+- **Tools:** Magic, KLayout (for DRC checks)
+
+**Layout vs. Schematic (LVS) Check:**  
+- **Tools:** Netgen (for LVS checks)
+
+**Antenna Checks:**  
+- **Tools:** Magic (for checking antenna effects)
+
+### OpenLANE Directory structure
+```
+├── OOpenLane             -> directory where the tool can be invoked (run docker first)
+│   ├── designs          -> All designs must be extracted from this folder
+│   │   │   ├── picorv32a -> Design used as case study for this workshop
+│   |   |   ├── ...
+|   |   ├── ...
+├── pdks                 -> contains pdk related files 
+│   ├── skywater-pdk     -> all Skywater 130nm PDKs
+│   ├── open-pdks        -> contains scripts that makes the commerical PDK (which is normally just compatible to commercial tools) to also be compatible with the open-source EDA tool
+│   ├── sky130A          -> pdk variant made especially compatible for open-source tools
+│   │   │  ├── libs.ref  -> files specific to node process (timing lib, cell lef, tech lef) for example is `sky130_fd_sc_hd` (Sky130nm Foundry Standard Cell High Density)  
+│   │   │  ├── libs.tech -> files specific for the tool (klayout,netgen,magic...) 
+```
+### Synthesis in Openlane
+
+Run the following in VSD Virtual Box:
+```
+cd Desktop/work/tools/openlane_working_dir/openlane
+docker
+./flow.tcl -interactive
+package require openlane 0.9
+prep -design picorv32a
+run_synthesis
+```
+
+
+
 
 
 </details>
