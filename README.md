@@ -3211,8 +3211,80 @@ cd ../../pdks/sky130A/libs.tech/openlane/sky130_fd_sc_hd/
 less tracks.info
 ```
 ![image](https://github.com/user-attachments/assets/df24416d-8ff9-4078-b235-711127760411)
+Commands to set grid for tkcon window as tracks of locali layer use the following command:
+```
+grid 0.46um 0.34um 0.23um 0.17um
+```
+![image](https://github.com/user-attachments/assets/2b9c6117-a9ea-49c6-94c5-e223457bb810)
+Save it by giving a custon name
+
+Open it using:
+```
+magic -T sky130A.tech sky130_ansinv.mag &
+```
+![image](https://github.com/user-attachments/assets/45f6222d-0595-4aa2-9bde-88e67ca790e9)
+Now, type the following command in tkcon window:
+```
+lef write
+```
+![image](https://github.com/user-attachments/assets/511bb080-d68b-40e2-bde8-2f0298779b7d)
+Copy the newly generated lef and associated required lib files to 'picorv32a' design 'src' directory
+```
+# Copy lef file
+cp sky130_ansinv.lef ~/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src/
+
+# List and check whether it's copied
+ls ~/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src/
+
+# Copy lib files
+cp libs/sky130_fd_sc_hd__* ~/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src/
+
+# List and check whether it's copied
+ls ~/Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/src/
+```
+![image](https://github.com/user-attachments/assets/52c6f88f-42e3-4efb-be41-2d53e5aed947)
+
+Modify config.tcl:
+```
+# Design
+set ::env(DESIGN_NAME) "picorv32a"
+
+set ::env(VERILOG_FILES) "./designs/picorv32a/src/picorv32a.v"
+set ::env(SDC_FILES) "./designs/picorv32a/src/picorv32a.sdc"
 
 
+set ::env(CLOCK_PERIOD) "5.000"
+set ::env(CLOCK_PORT) "clk"
+
+set ::env(CLOCK_NET) $::env(CLOCK_PORT) 
+
+
+set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib "
+set ::env(LIB_FASTEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib "
+set ::env(LIB_TYPICAL) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+
+set ::env(EXTRA_LEFS) [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]   ## this is the new line added to the existing config.tcl file
+
+set filename $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/$::env(PDK)_$::env(STD_CELL_LIBRARY)_config.tcl
+if { [file exists $filename] == 1 } {
+  source $filename
+}
+```
+
+Now, run openlane flow synthesis:
+```
+cd Desktop/work/tools/openlane_working_dir/openlane
+docker
+```
+```
+./flow.tcl -interactive
+package require openlane 0.9
+prep -design picorv32a
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+run_synthesis
+```
 </details>
 
 
