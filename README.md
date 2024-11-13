@@ -2913,6 +2913,69 @@ cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/13-11
 magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.floorplan.def &
 ```
 ![image](https://github.com/user-attachments/assets/e60eeaf7-1fc6-48b2-98aa-7cf2d054a1a1)
+Decap and Tap Cells:
+![image](https://github.com/user-attachments/assets/eadc6210-c13d-4f6a-b06b-e6d8eba75d75)
+Unplaced standard cells at origin:
+![image](https://github.com/user-attachments/assets/05e2bf70-eb91-4cec-b7b0-37c1e308fb1c)
+
+ To run placement
+```
+run_placement
+```
+![image](https://github.com/user-attachments/assets/cd8e6119-6396-4980-bad0-73ead3285f67)
+
+To view the placement:
+```
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/13-11_15-17/results/placement/
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
+```
+![image](https://github.com/user-attachments/assets/476edae9-3f9e-4e5d-8d23-d7b69f4f5d8f)
+![image](https://github.com/user-attachments/assets/99bd40e2-58de-4ba8-98ef-543710fbe387)
+
+### Cell design and Characterization Flow
+In the industry, a typical standard cell characterization flow generally includes these steps:
+
+1. Import the models and technology files.
+2. Load the extracted SPICE netlist.
+3. Identify the cell behavior.
+4. Read in the subcircuits.
+5. Connect power sources.
+6. Apply stimulus to the characterization setup.
+7. Specify the necessary output capacitance loads.
+8. Provide essential simulation commands.
+
+### Timing parameters
+
+| Timing Definition       | Value     |
+|-------------------------|-----------|
+| slew_low_rise_thr       | 20% value |
+| slew_high_rise_thr      | 80% value |
+| slew_low_fall_thr       | 20% value |
+| slew_high_fall_thr      | 80% value |
+| in_rise_thr             | 50% value |
+| in_fall_thr             | 50% value |
+| out_rise_thr            | 50% value |
+| out_fall_thr            | 50% value |
+
+### Propagation Delay
+It refers to the time it takes for a change in an input signal to reach 50% of its final value to produce a corresponding change in the output signal to reach 50% of its final value of a digital circuit.
+
+```
+rise delay =  time(out_fall_thr) - time(in_rise_thr)
+```
+
+### Transistion time
+
+The time it takes the signal to move between states is the transition time , where the time is measured between 10% and 90% or 20% to 80% of the signal levels.
+```
+Fall transition time: time(slew_high_fall_thr) - time(slew_low_fall_thr)
+Rise transition time: time(slew_high_rise_thr) - time(slew_low_rise_thr)
+```
+
+## Day 3: Design library cell using Magic Layout and ngspice characterization
+
+### CMOS inverter ngspice simulations
+
 
 </details>
 
