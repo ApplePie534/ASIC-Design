@@ -3298,7 +3298,7 @@ Fixing slack:
 ```
 ./flow.tcl -interactive
 package require openlane 0.9
-prep -design picorv32a -tag 13-11_19-30 -overwrite
+prep -design picorv32a -tag 14-11_14-01 -overwrite
 set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
 add_lefs -src $lefs
 echo $::env(SYNTH_STRATEGY)
@@ -3314,6 +3314,51 @@ run_synthesis
 ![image](https://github.com/user-attachments/assets/4332139b-a92e-418e-87f7-e30aafa68f70)
 ![image](https://github.com/user-attachments/assets/52f28c3d-c04e-46af-8848-734292aceede)
 
+```
+run_floorplan
+```
+![image](https://github.com/user-attachments/assets/5467ab5d-c273-4deb-834a-6c8abc92af7f)
+
+Since we are facing unexpected un-explainable error while using run_floorplan command, we can instead use the following set of commands available based on information from `Desktop/work/tools/openlane_working_dir/openlane/scripts/tcl_commands/floorplan.tcl` and also based on Floorplan Commands section in `Desktop/work/tools/openlane_working_dir/openlane/docs/source/OpenLANE_commands.md`
+```
+init_floorplan
+place_io
+tap_decap_or
+```
+Now, do placement
+```
+run_placement
+```
+![image](https://github.com/user-attachments/assets/12610a57-dd10-499e-9c0a-ce54814e779b)
+Now, open a new terminal and run the below commands to load placement def in magic
+```
+cd Desktop/work/tools/openlane_working_dir/openlane/designs/picorv32a/runs/14-11_14-01/results/placement/
+magic -T /home/vsduser/Desktop/work/tools/openlane_working_dir/pdks/sky130A/libs.tech/magic/sky130A.tech lef read ../../tmp/merged.lef def read picorv32a.placement.def &
+```
+![image](https://github.com/user-attachments/assets/8cf5e6e9-f131-47cc-a80c-3798504c6a8d)
+Custom inverter inserted in placement def
+![image](https://github.com/user-attachments/assets/e594598f-f8d7-4a51-8752-6b9d30d587b2)
+Now, select the cell and type expand in tkcon window to view internal layers of cells
+![image](https://github.com/user-attachments/assets/dbbb9faf-68bc-4227-a83a-80276e054a38)
+
+### Timing analysis with ideal clocks using openSTA 
+Pre-layout STA will include effects of clock buffers and net-delay due to RC parasitics (wire delay will be derived from PDK library wire model).
+![image](https://github.com/user-attachments/assets/3f94bc03-674d-4c67-960b-3eb1b600e8ef)
+
+Since we are getting 0 WNS after improved timing run, we will be doing the timing analysis on initial run of synthesis which has lots of violations and no parameters added to improve timing.
+
+Commands to invoke the OpenLANE flow include new lef and perform synthesis:
+```
+cd Desktop/work/tools/openlane_working_dir/openlane
+docker
+./flow.tcl -interactive
+package require openlane 0.9set
+prep -design picorv32a
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+set ::env(SYNTH_SIZING) 1
+run_synthesis
+```
 </details>
 
 
