@@ -2613,6 +2613,8 @@ source sta_pvt.tcl
 The package in an embedded board serves as the protective enclosure for the actual silicon chip, providing structural support and shielding it from physical damage. The package also routes signals through connections, commonly using wire bonding to link the internal chip to external pins or contacts, enabling integration with the circuit board.
 
 ![image](https://github.com/user-attachments/assets/ff705527-2cae-4ada-960a-62f658889fac)
+![385468075-ff705527-2cae-4ada-960a-62f658889fac](https://github.com/user-attachments/assets/6da432ce-0b33-4cc2-8ad2-d5487875032f)
+
 
 
 ### Chip
