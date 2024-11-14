@@ -3250,21 +3250,19 @@ Modify config.tcl:
 set ::env(DESIGN_NAME) "picorv32a"
 
 set ::env(VERILOG_FILES) "./designs/picorv32a/src/picorv32a.v"
-set ::env(SDC_FILES) "./designs/picorv32a/src/picorv32a.sdc"
-
+set ::env(SDC_FILE) "./designs/picorv32a/src/picorv32a.sdc"
 
 set ::env(CLOCK_PERIOD) "5.000"
 set ::env(CLOCK_PORT) "clk"
 
-set ::env(CLOCK_NET) $::env(CLOCK_PORT) 
+set ::env(CLOCK_NET) $::env(CLOCK_PORT)
 
-
-set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib "
+set ::env(LIB_SYNTH) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
 set ::env(LIB_FASTEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
-set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib "
+set ::env(LIB_SLOWEST) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
 set ::env(LIB_TYPICAL) "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
 
-set ::env(EXTRA_LEFS) [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]   ## this is the new line added to the existing config.tcl file
+set ::env(EXTRA_LEFS) [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
 
 set filename $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/$::env(PDK)_$::env(STD_CELL_LIBRARY)_config.tcl
 if { [file exists $filename] == 1 } {
@@ -3285,6 +3283,37 @@ set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
 add_lefs -src $lefs
 run_synthesis
 ```
+
+![image](https://github.com/user-attachments/assets/855c2801-bb82-421a-bce9-f8c2b6d8875f)
+![image](https://github.com/user-attachments/assets/3052a331-7ef2-47a4-9c93-d09f1cad160a)
+![image](https://github.com/user-attachments/assets/e430b70e-93a4-4def-af21-030f68f0dacd)
+![image](https://github.com/user-attachments/assets/1bdc7d03-b068-420b-98a4-5117f17e261a)
+
+### Delay Tables
+
+Delay plays a crucial role in cell timing, impacted by input transition and output load. Cells of the same type can have different delays depending on wire length due to resistance and capacitance variations. To manage this, "delay tables" are created, using 2D arrays with input slew and load capacitance for each buffer size as timing models. Algorithms compute buffer delays from these tables, interpolating where exact data isn’t available to estimate delays accurately, preserving signal integrity across varying load conditions.
+![image](https://github.com/user-attachments/assets/4b6ceaba-4e7d-4372-9b0e-4f7609012683)
+
+Fixing slack:
+```
+./flow.tcl -interactive
+package require openlane 0.9
+prep -design picorv32a -tag 13-11_19-30 -overwrite
+set lefs [glob $::env(DESIGN_DIR)/src/*.lef]
+add_lefs -src $lefs
+echo $::env(SYNTH_STRATEGY)
+set ::env(SYNTH_STRATEGY) "DELAY 3"
+echo $::env(SYNTH_BUFFERING
+echo $::env(SYNTH_SIZING)
+set ::env(SYNTH_SIZING) 1
+echo $::env(SYNTH_DRIVING_CELL)
+run_synthesis
+```
+![image](https://github.com/user-attachments/assets/ad9152ce-1093-4f42-9e64-7db58251e062)
+![image](https://github.com/user-attachments/assets/4f469547-7219-432d-aca2-da162d2fedb6)
+![image](https://github.com/user-attachments/assets/4332139b-a92e-418e-87f7-e30aafa68f70)
+![image](https://github.com/user-attachments/assets/52f28c3d-c04e-46af-8848-734292aceede)
+
 </details>
 
 
