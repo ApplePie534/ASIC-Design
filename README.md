@@ -3650,6 +3650,116 @@ exit
 </details>
 
 
+<details>
+  <summary>Lab 15</summary>
+	
+  ## OpenRoad Physical Design
+
+  ### Path to Zetta-Scale Computing  
+
+1. **Bombe**  
+The Bombe, an electro-mechanical machine designed during World War II, was pivotal in decrypting German Enigma-encrypted messages. Refined by Alan Turing and Gordon Welchman at Bletchley Park, UK, it systematically tested rotor settings of the Enigma machine by leveraging known plaintext patterns. By performing logical operations to narrow down possible keys, the Bombe drastically accelerated the decryption process and contributed significantly to the Allied war effort.  
+
+2. **ENIAC (Electronic Numerical Integrator and Computer)**  
+Developed during World War II by John Presper Eckert and John Mauchly at the University of Pennsylvania, ENIAC became the first fully electronic, general-purpose digital computer. Completed in 1945, it was primarily designed for calculating artillery firing tables for the U.S. Army. Unlike earlier mechanical or electromechanical systems, ENIAC utilized vacuum tubes. However, it required manual reconfiguration for each new task, as it lacked stored-program capability. Despite its limitations, ENIAC showcased the immense potential of electronic computing for solving large-scale numerical problems.  
+
+3. **EDVAC (Electronic Discrete Variable Automatic Computer)**  
+EDVAC, another milestone by Eckert and Mauchly with conceptual contributions from John von Neumann, marked a significant leap forward in computing technology. Completed in 1949, EDVAC introduced the stored-program concept, allowing data and instructions to reside in memory. This innovation simplified programming, utilized binary representation instead of decimal, and formed the foundation of the modern von Neumann architecture.
+
+### 50 Years of Microprocessor Trend Data:
+![image](https://github.com/user-attachments/assets/049a47b4-48d8-4ae7-a929-9ed0687153d9)
+
+#### **Key Metrics**  
+
+1. **Transistors (Orange Triangles)**  
+   - The number of transistors on microprocessor chips has grown exponentially, following Moore's Law, which predicts a doubling roughly every two years.  
+   - This exponential growth enabled increasingly complex processors, reaching billions of transistors by the 2020s.
+
+2. **Single-Thread Performance (Blue Circles)**  
+   - Measured using benchmarks like SpecINT, single-thread performance indicates the computational ability of a single processor core.  
+   - Performance steadily improved through innovations in architecture, instruction-level parallelism, and clock speeds.  
+   - However, growth slowed after 2005 due to physical limits, such as power dissipation and heat.
+
+3. **Frequency (Green Diamonds)**  
+   - Processor clock speeds increased consistently until the early 2000s.  
+   - Plateaued as inefficiencies and heat dissipation challenges made further increases impractical.
+
+4. **Typical Power (Red Triangles)**  
+   - Power consumption grew alongside transistor density and clock speeds.  
+   - By the mid-2000s, power efficiency became a critical design constraint to manage thermal limits.
+
+5. **Number of Logical Cores (Black Dots)**  
+   - The shift to multi-core processors emerged in the mid-2000s as a solution to the stagnation in single-thread performance.  
+   - Increasing core counts facilitated parallel processing, boosting overall performance and efficiency.
+
+---
+
+#### **Key Milestones**  
+
+1. **iPhone Release (~2007)**  
+   - Marked the advent of mobile computing, prioritizing power efficiency without compromising performance.  
+   - This milestone drove innovations in low-power processor designs and reshaped consumer electronics.
+
+2. **Datacenter-Scale Computing (Post-2010)**  
+   - Shifted focus toward energy-efficient, scalable, and parallel architectures.  
+   - Addressed the needs of cloud computing and large-scale data centers, shaping the modern computing landscape.
+  
+### Path to zetta-scale computing
+
+![image](https://github.com/user-attachments/assets/41ff22cc-ef64-4781-8218-9ead3687cb41)
+
+
+### **The Path to Zettascale Computing**  
+
+Tracing the evolution of computing performance from gigascale in 1984 to the anticipated zettascale by 2035, measured in **FLOPS** (floating-point operations per second), highlights the extraordinary growth in computational capability driven by innovations in high-performance computing (HPC).
+
+---
+
+#### **Key Performance Levels**  
+
+1. **Gigascale (10⁹ FLOPS)**  
+   - **Era:** 1984  
+   - **Significance:** Represented the computational capability of early supercomputers, laying the groundwork for rapid advancements in performance.  
+
+2. **Terascale (10¹² FLOPS)**  
+   - **Era:** ~1997  
+   - **Example System:** *Jaguar (Cray XT5)*  
+   - **Power Consumption:** 7 MW  
+   - **Impact:** Introduced teraflop-level performance, enabling more complex scientific simulations and data processing.
+
+3. **Petascale (10¹⁵ FLOPS)**  
+   - **Era:** 2008  
+   - **Example System:** *Titan (Cray XK6)*  
+   - **Performance:** 27 petaflops  
+   - **Power Consumption:** 9 MW  
+   - **Advancements:** Marked a leap in HPC, powering breakthroughs in weather modeling, genomics, and physics simulations.  
+
+4. **Exascale (10¹⁸ FLOPS)**  
+   - **Era:** 2021  
+   - **Example System:** *Frontier (Cray Shasta)*  
+   - **Performance:** 1.5 exaflops  
+   - **Configuration:** 4 AMD GPUs + 1 AMD CPU  
+   - **Power Consumption:** 29 MW  
+   - **Applications:** Enabled massive-scale AI workloads, precise simulations for climate, energy, and materials science.  
+
+5. **Zettascale (10²¹ FLOPS)**  
+   - **Era:** Expected ~2035  
+   - **Projected Applications:** Advanced climate modeling, AI-driven innovations, and global-scale simulations in physics and biology.  
+   - **Estimated Power Consumption:** 50–100 MW per machine  
+   - **Challenges:** Achieving power efficiency and scalability while balancing the costs and thermal constraints of such massive computational systems.  
+
+### CMOS Evolution and Next-Gen Candidates
+![image](https://github.com/user-attachments/assets/67581ec2-2954-4954-b828-e033b62a6225)
+
+### FinFETs
+![image](https://github.com/user-attachments/assets/7a610808-c457-4c62-8745-fd868954a6ba)
+
+
+
+
+</details>
+
+
 
 
 
