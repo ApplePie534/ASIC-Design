@@ -1,4 +1,4 @@
-# ASIC-Design
+![Screenshot from 2024-11-26 16-45-01](https://github.com/user-attachments/assets/7580e15a-d47e-4ad7-b82e-e854f01378bc)# ASIC-Design
 
 <details>
   <summary>Lab 1</summary>
@@ -4748,6 +4748,128 @@ sudo ./setup.sh
 Build tool on local machine command:
 ```
 ./build_openroad.sh --local --threads 2
+```
+![Screenshot from 2024-11-26 15-38-25](https://github.com/user-attachments/assets/f5c1c076-55f5-4b7d-8072-ec3b830e8ed9)
+
+verify installation
+```
+source ./env.sh
+yosys -help
+openroad -help
+cd flow
+make
+make gui_final
+```
+![Screenshot from 2024-11-26 05-25-50](https://github.com/user-attachments/assets/8fb24c76-05ac-4861-8dea-b871a6090494)
+![Screenshot from 2024-11-26 05-29-29](https://github.com/user-attachments/assets/c415ebb8-2530-4c50-ac4c-9f5a2b4a7a93)
+![Screenshot from 2024-11-26 05-30-13](https://github.com/user-attachments/assets/eb7b7376-1841-4a63-b9e0-79b7962bed23)
+
+- Create a directory named `vsdbabysoc` inside `OpenROAD-flow-scripts/flow/designs/sky130hd`.
+
+- Copy the `gds`, `include`, `lef`, and `lib` folders from the `VSDBabySoC` folder on your system into the newly created `vsdbabysoc` directory.
+
+- Verify that the following files are included in each respective folder:
+  - **`gds` folder:** `avsddac.gds`, `avsdpll.gds`
+  - **`include` folder:** `sandpiper.vh`, `sandpiper_gen.vh`, `sp_default.vh`, `sp_verilog.vh`
+  - **`lef` folder:** `avsddac.lef`, `avsdpll.lef`
+  - **`lib` folder:** `avsddac.lib`, `avsdpll.lib`
+
+- Copy the constraints file `vsdbabysoc_synthesis.sdc` from the `VSDBabySoC` folder into the `vsdbabysoc` directory.
+
+- Also, copy the files `macro.cfg` and `pin_order.cfg` from the `VSDBabySoC` folder into the same `vsdbabysoc` directory.
+
+- Config.mk file:
+```
+export DESIGN_NICKNAME = vsdbabysoc
+export DESIGN_NAME = vsdbabysoc
+export PLATFORM    = sky130hd
+
+# export VERILOG_FILES_BLACKBOX = $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/IPs/*.v
+# export VERILOG_FILES = $(sort $(wildcard $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/*.v))
+# Explicitly list the Verilog files for synthesis
+export VERILOG_FILES = $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/vsdbabysoc.v \
+                       $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/rvmyth.v \
+                       $(DESIGN_HOME)/src/$(DESIGN_NICKNAME)/clk_gate.v
+
+export SDC_FILE      = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/vsdbabysoc_synthesis.sdc
+
+export vsdbabysoc_DIR = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)
+
+export VERILOG_INCLUDE_DIRS = $(wildcard $(vsdbabysoc_DIR)/include/)
+# export SDC_FILE      = $(wildcard $(vsdbabysoc_DIR)/sdc/*.sdc)
+export ADDITIONAL_GDS  = $(wildcard $(vsdbabysoc_DIR)/gds/*.gds.gz)
+export ADDITIONAL_LEFS  = $(wildcard $(vsdbabysoc_DIR)/lef/*.lef)
+export ADDITIONAL_LIBS = $(wildcard $(vsdbabysoc_DIR)/lib/*.lib)
+# export PDN_TCL = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/pdn.tcl
+
+# Clock Configuration (vsdbabysoc specific)
+# export CLOCK_PERIOD = 20.0
+export CLOCK_PORT = CLK
+export CLOCK_NET = $(CLOCK_PORT)
+
+# Floorplanning Configuration (vsdbabysoc specific)
+export FP_PIN_ORDER_CFG = $(wildcard $(DESIGN_DIR)/pin_order.cfg)
+# export FP_SIZING = absolute
+
+export DIE_AREA   = 0 0 1600 1600
+export CORE_AREA  = 20 20 1590 1590
+
+# Placement Configuration (vsdbabysoc specific)
+export MACRO_PLACEMENT_CFG = $(wildcard $(DESIGN_DIR)/macro.cfg)
+export PLACE_PINS_ARGS = -exclude left:0-600 -exclude left:1000-1600: -exclude right:* -exclude top:* -exclude bottom:*
+# export MACRO_PLACEMENT = $(DESIGN_HOME)/$(PLATFORM)/$(DESIGN_NICKNAME)/macro_placement.cfg
+
+export TNS_END_PERCENT = 100
+export REMOVE_ABC_BUFFERS = 1
+
+# Magic Tool Configuration
+export MAGIC_ZEROIZE_ORIGIN = 0
+export MAGIC_EXT_USE_GDS = 1
+
+# CTS tuning
+export CTS_BUF_DISTANCE = 600
+export SKIP_GATE_CLONING = 1
+
+# export CORE_UTILIZATION=0.1  # Reduce this value to allow more whitespace for routing.
+```
+
+Synthesis reports:
+![Screenshot from 2024-11-26 16-09-34](https://github.com/user-attachments/assets/3bb954bb-89de-4a90-9cf0-33660c568024)
+![Screenshot from 2024-11-26 16-09-17](https://github.com/user-attachments/assets/ed7ad3ee-285e-40ee-9c11-fe68f55d5492)
+![Screenshot from 2024-11-26 16-08-50](https://github.com/user-attachments/assets/b6c16f24-7f4b-412f-82d5-4249bd1001b9)
+![Screenshot from 2024-11-26 15-38-25](https://github.com/user-attachments/assets/b440800e-deeb-454d-bb38-42991ab56ae4)
+![Screenshot from 2024-11-26 16-47-55](https://github.com/user-attachments/assets/173e03d0-fed5-4ce1-b3c5-a2530a89b621)
+![Screenshot from 2024-11-26 16-48-40](https://github.com/user-attachments/assets/5f8cc9d5-a86e-4d7e-b08e-0b78a7850fe5)
+![Screenshot from 2024-11-26 16-49-05](https://github.com/user-attachments/assets/978c77bd-00ae-401d-a65f-7e87108834f2)
+![Screenshot from 2024-11-26 16-49-21](https://github.com/user-attachments/assets/b49459e1-aa03-4160-ab4b-2f5e4c2939b1)
+
+
+Commands for floorplan:
+```
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk floorplan
+```
+[Uploading Screenshot from 2024-11-26 16-45-01.png…]()
+![Screenshot from 2024-11-26 16-42-04](https://github.com/user-attachments/assets/1ff801cd-fac8-44e3-a32d-2488ce4d8a62)
+
+```
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk gui_floorplan
+```
+![Screenshot from 2024-11-26 16-46-29](https://github.com/user-attachments/assets/b5044344-d5b4-4890-a56c-870324269824)
+
+### Report Screenshots
+![Screenshot from 2024-11-26 16-50-13](https://github.com/user-attachments/assets/8dc17593-19e1-410b-864d-6032c9ac9d50)
+![Screenshot from 2024-11-26 16-50-51](https://github.com/user-attachments/assets/9dc59204-af06-4551-ae31-dc71f05d65a9)
+
+
+Commands for Placement:
+```
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk place
+```
+![Screenshot from 2024-11-26 16-51-58](https://github.com/user-attachments/assets/76d46d48-e300-4086-b468-da4b627e1d38)
+![Screenshot from 2024-11-26 16-53-10](https://github.com/user-attachments/assets/88aabd30-03e1-4efe-91b0-d9a65751cede)
+
+```
+make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk gui_place
 ```
 
 </details>
