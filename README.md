@@ -1,4 +1,4 @@
-![Screenshot from 2024-11-26 16-45-01](https://github.com/user-attachments/assets/7580e15a-d47e-4ad7-b82e-e854f01378bc)# ASIC-Design
+# ASIC-Design
 
 <details>
   <summary>Lab 1</summary>
@@ -4848,7 +4848,7 @@ Commands for floorplan:
 ```
 make DESIGN_CONFIG=./designs/sky130hd/vsdbabysoc/config.mk floorplan
 ```
-[Uploading Screenshot from 2024-11-26 16-45-01.png…]()
+![Screenshot from 2024-11-26 16-45-01](https://github.com/user-attachments/assets/7580e15a-d47e-4ad7-b82e-e854f01378bc)
 ![Screenshot from 2024-11-26 16-42-04](https://github.com/user-attachments/assets/1ff801cd-fac8-44e3-a32d-2488ce4d8a62)
 
 ```
